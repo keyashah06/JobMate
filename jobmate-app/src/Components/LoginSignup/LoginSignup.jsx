@@ -1,10 +1,13 @@
 import React, {useState} from "react";
 import { TbUser, TbMail, TbLock } from "react-icons/tb";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import './LoginSignup.css'
 //import "./styles.css"; 
 
 const LoginSignup = () => {
-  const [action,setAction] = useState("Login"); 
+  const [action,setAction] = useState("Login");
+  const [showPassword, setShowPassword] = useState(false); 
+  const [password, setPassword] = useState("");
   
   return (
     <div className='container'>
@@ -17,15 +20,21 @@ const LoginSignup = () => {
         <TbUser size={20} />  
           <input type="text" placeholder="Username" />
         </div>}
-        
-      
         <div className="input">
           <TbMail size={20} />  
           <input type="email" placeholder="Email Id" />
         </div>
         <div className="input">
           <TbLock size={20} />  
-          <input type="password" placeholder="Password" />
+          <input 
+            type={showPassword ? "password" : "text"} 
+            placeholder="Password" 
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <span onClick={() => setShowPassword(!showPassword)} style={{ cursor: "pointer", marginLeft: "10px" }}>
+            {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+          </span>
       </div>
      </div> 
      {action==="Sign Up"?<div></div>:<div className="forgot-password">Forgot Password? <span>Click Here!</span></div>}
