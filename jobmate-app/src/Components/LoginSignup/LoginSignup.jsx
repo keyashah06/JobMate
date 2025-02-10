@@ -4,8 +4,38 @@ import './LoginSignup.css'
 //import "./styles.css"; 
 
 const LoginSignup = () => {
-  const [action,setAction] = useState("Login"); 
-  
+  const [action,setAction] = useState("Login");
+  const [username, setUsername]= useState("");
+  const [password, setPassword]= useState("");
+  const [error, setError]= useState("");
+  const [message, setMessage]= useState("");
+
+  const handleLogin = async () => {
+
+    setError("");
+    setMessage("");
+
+    try {
+      const response = await fetch ("http://127.0.0.1:8000/auth/login/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({username, password})
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        setMessage("Login successful");
+        localStorage.setItem("token", data.token);
+
+      } else {
+        setError(data.error || "LOGIN FAILED");
+      }
+    } catch (err) {
+      setError("Something went wrong");
+    }
+  };
+
+
   return (
     <div className='container'>
       <div className="header">
@@ -13,28 +43,48 @@ const LoginSignup = () => {
         <div className="underline"></div>
       </div>
       <div className="inputs">
-        {action==="Login"?<div></div>:<div className="input">
-        <TbUser size={20} />  
-          <input type="text" placeholder="Username" />
-        </div>}
-        
-      
         <div className="input">
-          <TbMail size={20} />  
-          <input type="email" placeholder="Email Id" />
+          <TbUser size={20} />
+          <input
+            type="text"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
         </div>
         <div className="input">
-          <TbLock size={20} />  
-          <input type="password" placeholder="Password" />
+          <TbLock size={20} />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
       </div>
-     </div> 
-     {action==="Sign Up"?<div></div>:<div className="forgot-password">Forgot Password? <span>Click Here!</span></div>}
-     <div className="submit-container">
-      <div className={action==="Login"?"submit gray":"submit"} onClick={()=>{setAction("Sign Up")}}>Sign Up</div>
-      <div className={action==="Sign Up"?"submit gray":"submit"} onClick={()=>{setAction("Login")}}>Login</div>
-     </div>
+      {action === "Sign Up" ? null : (
+        <div className="forgot-password">
+          Forgot Password? <span>Click Here!</span>
+        </div>
+      )}
+      {error && <div className="error">{error}</div>}
+      {message && <div className="success">{message}</div>}
+      <div className="submit-container">
+        <div
+          className={action === "Login" ? "submit gray" : "submit"}
+          onClick={() => setAction("Sign Up")}
+        >
+          Sign Up
+        </div>
+        <div
+          className={action === "Sign Up" ? "submit gray" : "submit"}
+          onClick={action === "Login" ? handleLogin : () => setAction("Login")}
+        >
+          Login
+        </div>
+      </div>
     </div>
   );
 };
 
-export default LoginSignup
+export default LoginSignup;
