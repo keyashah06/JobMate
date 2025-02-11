@@ -1,6 +1,7 @@
 """
 URL configuration for jobmate_backend project.
 
+The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.1/topics/http/urls/
 Examples:
 Function views
@@ -15,13 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from auth_app.views import login_view
+from auth_app.views import login_view, register_view
 
 
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("auth/login/", login_view, name = "login")
-    
+    path("auth/login/", login_view, name = "login"),
+    path("auth/register/", register_view, name = "register")
 ]
 

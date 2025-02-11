@@ -6,6 +6,7 @@ import './LoginSignup.css'
 const LoginSignup = () => {
   const [action,setAction] = useState("Login");
   const [username, setUsername]= useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword]= useState("");
   const [error, setError]= useState("");
   const [message, setMessage]= useState("");
@@ -35,6 +36,30 @@ const LoginSignup = () => {
     }
   };
 
+  const handleSignup = async () => {
+
+    setError("");
+    setMessage("");
+
+    try {
+      const response = await fetch ("http://127.0.0.1:8000/auth/register/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({username,email, password})
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        setMessage("Signup successful");
+
+      } else {
+        setError(data.error || "SIGNUP FAILED");
+      }
+    } catch (err) {
+      setError("Something went wrong");
+    }
+  };
+
 
   return (
     <div className='container'>
@@ -52,6 +77,19 @@ const LoginSignup = () => {
             onChange={(e) => setUsername(e.target.value)}
           />
         </div>
+
+        {action === "Sign Up" && (
+          <div className="input">
+            <TbMail size={20} />
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+        )}
+
         <div className="input">
           <TbLock size={20} />
           <input
@@ -69,16 +107,33 @@ const LoginSignup = () => {
       )}
       {error && <div className="error">{error}</div>}
       {message && <div className="success">{message}</div>}
+
       <div className="submit-container">
+        {/* Sign Up button */}
         <div
-          className={action === "Login" ? "submit gray" : "submit"}
-          onClick={() => setAction("Sign Up")}
+          className="submit"
+          onClick={() => {
+            if (action === "Login") {
+              setAction("Sign Up");
+            } else {
+              handleSignup();
+            }
+          }}
         >
           Sign Up
         </div>
+
+
+        {/* Login button */}
         <div
-          className={action === "Sign Up" ? "submit gray" : "submit"}
-          onClick={action === "Login" ? handleLogin : () => setAction("Login")}
+          className="submit"
+          onClick={() => {
+            if (action === "Sign Up") {
+              setAction("Login");
+            } else {
+              handleLogin();
+            }
+          }}
         >
           Login
         </div>
