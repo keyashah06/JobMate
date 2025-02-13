@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import { TbUser, TbMail, TbLock } from "react-icons/tb";
-import './LoginSignup.css'
-//import "./styles.css"; 
+import { Link } from 'react-router-dom';
+import './Auth.css'
 
 const LoginSignup = () => {
   const [action,setAction] = useState("Login");
@@ -101,8 +101,13 @@ const LoginSignup = () => {
         </div>
       </div>
       {action === "Sign Up" ? null : (
-        <div className="forgot-password">
-          Forgot Password? <span>Click Here!</span>
+        <div
+          className="links"
+          onClick={() => {
+            setAction("Forgot Password")
+          }}>
+          Forgot Password? <span><Link to= "/forgot-password">
+            Click Here!</Link></span>
         </div>
       )}
       {error && <div className="error">{error}</div>}
