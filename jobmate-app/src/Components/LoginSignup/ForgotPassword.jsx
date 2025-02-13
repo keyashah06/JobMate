@@ -30,7 +30,7 @@ const ForgotPassword = () => {
           <input type="password" placeholder="Confirm New Password" />
         </div>
      </div> 
-     {action==="Login"?<div></div>:<div className="links" onClick={()=>{setAction("Login")}}>Remember Password?  <span><Link to="/">Click Here!</Link></span></div>}
+     {action==="Login"?<div></div>:<div className="links" >Remember Password?  <span onClick={()=>{setAction("Login")}}><Link to="/">Click Here!</Link></span></div>}
      <div className="submit-container">
       <div className={action==="Forgot Password"?"submit gray":"submit"}> Reset Password </div>
      </div>

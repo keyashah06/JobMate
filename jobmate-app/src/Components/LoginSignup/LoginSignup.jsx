@@ -103,10 +103,10 @@ const LoginSignup = () => {
       {action === "Sign Up" ? null : (
         <div
           className="links"
-          onClick={() => {
+          >
+          Forgot Password? <span onClick={() => {
             setAction("Forgot Password")
-          }}>
-          Forgot Password? <span><Link to= "/forgot-password">
+          }}><Link to= "/forgot-password">
             Click Here!</Link></span>
         </div>
       )}
