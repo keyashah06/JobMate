@@ -3,9 +3,10 @@
     flex-direction: column;
     margin: auto;
     margin-top: 200px;
-    width: 600px;
+    width: 550px;
     background: #fff;
     padding-bottom: 30px;
+    max-width: 600px;
 }
 
 .header{
@@ -19,7 +20,7 @@
 
 .text{
     color: #3c009d;
-    font-size: 48px;
+    font-size: 40px;
     font-weight: 700;
 }
 
@@ -61,14 +62,14 @@
     font-size: 19px;
 }
 
-.forgot-password{
+.links {
     padding-left: 62px;
     margin-top: 27px;
     color: #797979;
     font-size:18px;
 }
 
-.forgot-password span{
+.links span{
     color: #4c00b4;
     cursor: pointer;
 }
