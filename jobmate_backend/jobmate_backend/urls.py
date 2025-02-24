@@ -17,12 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from auth_app.views import login_view, register_view
-
+from resumes.views import upload_resume
 
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("auth/login/", login_view, name = "login"),
-    path("auth/register/", register_view, name = "register")
+    path("auth/register/", register_view, name = "register"),
+    path("resumes/upload/", upload_resume, name = "upload_resume")
 ]
 

@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "jobmate_backend",
-    'corsheaders',
+    "corsheaders",
+    "resumes"
 ]
 
 CORS_ALLOWED_ORIGINS = [
