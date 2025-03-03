@@ -2,15 +2,39 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TbUser, TbSettings, TbUpload } from "react-icons/tb";
 import "./UploadResume.css"; 
+import axios from "axios";
 
 const UploadResume = () => {
   const navigate = useNavigate();
   const [selectedFile, setSelectedFile] = useState(null);
+  // banmeet code
+  const [loading, setLoading] = useState(false);
+  const [response, setResponse] = useState(null);
 
   const handleFileChange = (event) => {
     const file = event.target.files?.[0];
     if (file) {
       setSelectedFile(file);
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile) return;
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+
+    try {
+      const res = await axios.post("http://localhost:8000/resumes/upload/", formData, {
+        headers: { "Content-Type" : "multipart/form-data"},
+      });
+      setResponse(res.data);
+      alert("Resume Uploaded!");
+    } catch (error) {
+      console.error("Upload failed", error);
+      alert("Upload failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -45,8 +69,17 @@ const UploadResume = () => {
           )}
         </div>
 
-        <button className="upload-btn" disabled={!selectedFile} onClick={() => alert("Resume Uploaded!")}>Continue</button>
+        <button className="upload-btn" disabled={!selectedFile || loading} onClick={handleUpload}>
+          {loading ? "Uploading...": "Continue"}
+         </button>
         <button className="logout-btn" onClick={() => navigate("/")}>Logout</button>
+
+        {response && (
+          <div className= "response-container">
+            <h3>Extracted Information:</h3>
+            <pre>{JSON.stringify(response, null, 2)}</pre>
+            </div>
+        )}
       </div>
     </div>
   );

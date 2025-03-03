@@ -38,3 +38,24 @@ def register_view(request):
 
     return Response({"message": "User registered successfully"}, status = 201)
     
+#forget_password
+@api_view(['POST'])
+def reset_password_view(request):
+    email = request.data.get("email")
+    old_password = request.data.get("old_password")
+    new_password = request.data.get("new_password")
+    confirm_password = request.data.get("confirm_password")
+    
+    try:
+        user = User.objects.get(email = email)
+    except User.DoesNotExist:
+        return Response({"error": "User not found"}, status = 404)
+    
+    if not user.check_password(old_password):
+        return Response({"error": "Old password is incorrect"}, status = 400)
+    
+    if new_password != confirm_password:
+        return Response({"error": "New password and confirm password do not match"}, status = 400)
+    user.set_password(new_password)
+    user.save()
+    return Response({"message": "Password reset successfully"}, status = 200)

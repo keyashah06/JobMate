@@ -13,6 +13,7 @@ import spacy
 from spacy.matcher import Matcher, PhraseMatcher
 from skillNer.general_params import SKILL_DB
 from skillNer.skill_extractor_class import SkillExtractor
+import json
 
 nlp = spacy.load("en_core_web_sm")
 matcher = Matcher(nlp.vocab)
@@ -61,7 +62,7 @@ def extract_experience(text):
  
     exp_match = re.search(experience_headers, text)
     if not exp_match:
-        print("DEBUG: No experience header found!")
+     
         return ""
 
     exp_start = exp_match.start()
@@ -70,52 +71,52 @@ def extract_experience(text):
 
   
     experience_text = text[exp_start:exp_end].strip()
-    print("\nDEBUG: Extracted Experience Text\n", experience_text)
+
     return experience_text
 
 
 
 
 def extract_projects(text):
-    # Define headers for "projects" and other sections that should stop the capture
+   
     project_headers = r"(?i)\b(projects|personal projects|academic projects|relevant projects)\b"
     stop_headers = r"(?i)\b(experience|education|skills|certifications|summary|technical skills|leadership)\b"
+
     
-    # Locate the starting point of the projects section
-    proj_match = re.search(project_headers, text, re.IGNORECASE)
+    proj_match = re.search(project_headers, text)
     if not proj_match:
-        return []
+        return ""
 
     proj_start = proj_match.start()
-    
-    # Locate the point where the projects section ends (next section header)
-    stop_match = re.search(stop_headers, text[proj_start:], re.IGNORECASE)
+
+   
+    stop_match = re.search(stop_headers, text[proj_start:])
     proj_end = proj_start + stop_match.start() if stop_match else len(text)
 
-    project_text = text[proj_start:proj_end].strip()
-
-    # Clean up extra spaces and newlines
-    project_text = re.sub(r"\n+", " ", project_text)  
-    project_text = re.sub(r"\s{2,}", " ", project_text)  
-
-    # Regex to capture project details like titles, dates, and descriptions
-    project_pattern = r"([A-Za-z0-9\s\|\-]+)\s\|\s([A-Za-z\s]+)\s(\d{4})\s(.*?)\s*(?=\s{2,}|\b(?:experience|education|skills|certifications|summary|technical skills|leadership)\b|$)"
-    
-    projects = []
-    for match in re.finditer(project_pattern, project_text):
-        project_title = match.group(1).strip()  # Exclude "PROJECTS" from title
-        project_date = match.group(3).strip()
-        project_description = match.group(4).strip()
-
-        projects.append({
-            "title": project_title,
-            "date": project_date,
-            "description": project_description
-        })
-    
-    return projects
+   
+    return text[proj_start:proj_end].strip()
 
 
+def extract_education(text):
+  
+    education_headers = r"(?i)\b(education|academic background|educational qualifications)\b"
+    stop_headers = r"(?i)\b(experience|projects|skills|certifications|summary|technical skills|leadership)\b"
+
+   
+    edu_match = re.search(education_headers, text)
+    if not edu_match:
+        return ""
+
+    edu_start = edu_match.start()
+
+  
+    stop_match = re.search(stop_headers, text[edu_start:])
+    edu_end = edu_start + stop_match.start() if stop_match else len(text)
+
+  
+    education_text = text[edu_start:edu_end].strip()
+
+    return education_text
 
 
 def extract_text_from_pdf(uploaded_file):
@@ -157,4 +158,17 @@ def upload_resume(request):
    skills = extract_skills(text)
    experience = extract_experience(text)
    projects = extract_projects(text)
-   return Response({"text": text, "email": email, "phone_number": phone_number, "name": name, "skills": skills, "experience": experience, "projects": projects}, status=status.HTTP_200_OK)
+   education = extract_education(text)
+   
+
+   print(json.dumps({
+    "email": email,
+    "phone_number": phone_number,
+    "name": name,
+    "skills": skills,
+    "experience": experience,
+    "projects": projects,
+    "education": education
+   }, indent=2))
+
+   return Response({"text": text, "email": email, "phone_number": phone_number, "name": name, "skills": skills, "experience": experience, "projects": projects, "education": education}, status=status.HTTP_200_OK)
