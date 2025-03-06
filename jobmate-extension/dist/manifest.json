@@ -1,0 +1,19 @@
+{
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "name": "JobMate Extension",
+  "description": "JobMate's Chrome Extension",
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "JobMate"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["contentScript.js"]
+    }
+  ]
+}
