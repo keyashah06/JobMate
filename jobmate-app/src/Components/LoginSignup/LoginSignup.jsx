@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import { TbUser, TbMail, TbLock } from "react-icons/tb";
 import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import './Auth.css'
 
 const LoginSignup = () => {
@@ -10,6 +11,7 @@ const LoginSignup = () => {
   const [password, setPassword]= useState("");
   const [error, setError]= useState("");
   const [message, setMessage]= useState("");
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
 
@@ -27,7 +29,7 @@ const LoginSignup = () => {
       if (response.ok) {
         setMessage("Login successful");
         localStorage.setItem("token", data.token);
-
+        navigate("/UploadResume");
       } else {
         setError(data.error || "LOGIN FAILED");
       }
