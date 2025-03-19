@@ -11,6 +11,8 @@ class Resume(models.Model):
     experience = models.TextField(blank=True, null=True) # done
     skills = models.TextField(blank=True, null=True) # done
     projects = models.TextField(blank=True, null=True) # done
+    resume_file = models.FileField(upload_to='resumes/', null=True, blank=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True, null = True, blank= True)
 
     def __str__(self):
         return f"{self.user.username}'s Resume"

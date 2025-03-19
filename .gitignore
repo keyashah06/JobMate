@@ -2,3 +2,6 @@ jobmate-app/package-lock.json
 jobmate-app/package.json
 jobmate-app/package.json
 /node_modules
+/jobmate_backend/*
+/jobmate_backend/resumes
+jobmate_backend/auth_app/__pycache__/__init__.cpython-311.pyc
