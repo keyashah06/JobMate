@@ -24,14 +24,23 @@ const UploadResume = () => {
     const formData = new FormData();
     formData.append("file", selectedFile);
 
+    const token = localStorage.getItem("token");
+  
+
     try {
+      
       const res = await axios.post("http://localhost:8000/resumes/upload/", formData, {
-        headers: { "Content-Type" : "multipart/form-data"},
+        headers: {
+          "Content-Type" : "multipart/form-data",
+        "Authorization": `Token ${token}`,
+        },
       });
+     
       setResponse(res.data);
       alert("Resume Uploaded!");
     } catch (error) {
       console.error("Upload failed", error);
+      console.error("Error response:", error.response);
       alert("Upload failed");
     } finally {
       setLoading(false);
