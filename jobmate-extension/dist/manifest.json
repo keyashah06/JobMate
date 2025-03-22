@@ -2,6 +2,9 @@
   "version": "1.0.0",
   "manifest_version": 3,
   "name": "JobMate Extension",
+  "permissions": [
+    "activeTab"
+  ],
   "description": "JobMate's Chrome Extension",
   "action": {
     "default_popup": "index.html",
