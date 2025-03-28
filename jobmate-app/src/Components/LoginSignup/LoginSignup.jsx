@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { TbUser, TbMail, TbLock } from "react-icons/tb";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './Auth.css';
 
 const LoginSignup = () => {
@@ -26,17 +26,22 @@ const LoginSignup = () => {
       const response = await fetch("http://127.0.0.1:8000/auth/login/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ email, password }),
       });
+  
       const data = await response.json();
-      if (response.ok) {
-        setMessage("Login successful");
-        localStorage.setItem("token", data.token);
+      console.log("🔹 Login Response:", data); // ✅ LOG RESPONSE IN CONSOLE
+  
+      if (response.ok && data.mfa_required) {
+        setMessage("Login successful. MFA code sent.");
+        localStorage.setItem("email", email); // Store email for MFA verification
+        navigate("/verify-mfa"); // 🚀 Go to MFA verification page first!
       } else {
-        setError(data.error || "LOGIN FAILED");
+        setError(data.message || "LOGIN FAILED");
       }
     } catch (err) {
-      setError("Something went wrong");
+      console.error("❌ ERROR during login:", err);
+      setError("Something went wrong. Check console for details.");
     }
   };
 
@@ -59,14 +64,18 @@ const LoginSignup = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, email, password }),
       });
+
       const data = await response.json();
       if (response.ok) {
-        setMessage("Signup successful");
+        setMessage("Signup successful. MFA code sent.");
+        localStorage.setItem("email", email);
+        navigate("/verify-mfa"); // Redirect to MFA verification
       } else {
-        setError(data.error || "SIGNUP FAILED");
+        setError(data.message || "SIGNUP FAILED");
       }
     } catch (err) {
-      setError("Something went wrong");
+      console.error("❌ ERROR during signup:", err);
+      setError("Something went wrong. Check console for details.");
     }
   };
 
@@ -132,33 +141,6 @@ const LoginSignup = () => {
           </div>
         )}
       </div>
-
-      {action === "Sign Up" && (
-        <div className="signup-requirements">
-          <h3>Signup Requirements</h3>
-          <ul>
-            <li style={{ color: password.length >= 8 ? "green" : "red" }}>
-              At least 8 characters
-            </li>
-            <li style={{ color: /[A-Z]/.test(password) ? "green" : "red" }}>
-              1 uppercase letter
-            </li>
-            <li style={{ color: /\d/.test(password) ? "green" : "red" }}>
-              1 number
-            </li>
-            <li style={{ color: /[@$!%*?&]/.test(password) ? "green" : "red" }}>
-              1 special character (@, $, !, %, *, ?, &)
-            </li>
-          </ul>
-        </div>
-      )}
-
-      {action === "Login" && (
-        <div className="links">
-          Forgot Password?{" "}
-          <span onClick={() => navigate("/forgot-password")}>Click Here!</span>
-        </div>
-      )}
 
       {error && <div className="error">{error}</div>}
       {message && <div className="success">{message}</div>}

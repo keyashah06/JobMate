@@ -2,3 +2,15 @@ jobmate-app/package-lock.json
 jobmate-app/package.json
 jobmate-app/package.json
 /node_modules
+*.pyc
+*.pyc
+*.pyc
+/jobmate_backend/jobmate_backend/__pycache__
+/jobmate_backend/venv/Lib
+/jobmate_backend/venv
+jobmate_backend/jobmate_backend/__pycache__/settings.cpython-312.pyc
+jobmate_backend/jobmate_backend/__pycache__/urls.cpython-312.pyc
+*.pyc
+jobmate_backend/auth_app/__pycache__/models.cpython-312.pyc
+jobmate_backend/jobmate_backend/__pycache__/settings.cpython-312.pyc
+jobmate_backend/jobmate_backend/__pycache__/urls.cpython-312.pyc

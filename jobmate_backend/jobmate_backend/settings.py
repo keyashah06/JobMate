@@ -10,11 +10,15 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+from dotenv import load_dotenv
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Locate .env file and load it
+load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -38,26 +42,46 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     #added app to enable authentication
-    "auth_app",
+    'auth_app',
     "rest_framework",
     "rest_framework.authtoken",
     "jobmate_backend",
-    'corsheaders',
-]
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000"
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
+]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',  # Token-based auth for APIs
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ]
+}
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
+
+CORS_ALLOW_CREDENTIALS = True  # Allows frontend to send cookies
+
+CSRF_USE_SESSIONS = True
+CSRF_COOKIE_HTTPONLY = False  # Allows frontend to read the CSRF cookie
+CSRF_COOKIE_SECURE = False    # Change to True in production (if using HTTPS)
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
 ]
 
 ROOT_URLCONF = "jobmate_backend.urls"
@@ -136,3 +160,13 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# settings.py
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.postmarkapp.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+#EMAIL_USE_SSL = False
+EMAIL_HOST_USER = os.getenv("POSTMARK_API_KEY")  # From .env
+EMAIL_HOST_PASSWORD = os.getenv("POSTMARK_API_KEY")  # From .env
+DEFAULT_FROM_EMAIL = "no-reply@support-jobmate.com"
