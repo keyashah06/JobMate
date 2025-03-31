@@ -30,17 +30,17 @@ const LoginSignup = () => {
       });
   
       const data = await response.json();
-      console.log("🔹 Login Response:", data); // ✅ LOG RESPONSE IN CONSOLE
+      console.log("🔹 Login Response:", data); // LOG RESPONSE IN CONSOLE
   
       if (response.ok && data.mfa_required) {
         setMessage("Login successful. MFA code sent.");
         localStorage.setItem("email", email); // Store email for MFA verification
-        navigate("/verify-mfa"); // 🚀 Go to MFA verification page first!
+        navigate("/verify-mfa"); // Go to MFA verification page first!
       } else {
         setError(data.message || "LOGIN FAILED");
       }
     } catch (err) {
-      console.error("❌ ERROR during login:", err);
+      console.error("ERROR during login:", err);
       setError("Something went wrong. Check console for details.");
     }
   };
@@ -74,7 +74,7 @@ const LoginSignup = () => {
         setError(data.message || "SIGNUP FAILED");
       }
     } catch (err) {
-      console.error("❌ ERROR during signup:", err);
+      console.error("ERROR during signup:", err);
       setError("Something went wrong. Check console for details.");
     }
   };
@@ -109,7 +109,7 @@ const LoginSignup = () => {
           />
         </div>
         {action === "Sign Up" && email && !validateEmail(email) && (
-          <div className="error">⚠ Invalid email format</div>
+          <div className="error">Invalid email format</div>
         )}
 
         <div className="input password-container">
@@ -136,7 +136,7 @@ const LoginSignup = () => {
         </div>
         {action === "Sign Up" && password && !validatePassword(password) && (
           <div className="error">
-            ⚠ Password must be 8+ chars, include 1 uppercase, 1 number, & 1
+            Password must be 8+ chars, include 1 uppercase, 1 number, & 1
             special character
           </div>
         )}
