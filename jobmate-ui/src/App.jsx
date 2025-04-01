@@ -5,26 +5,23 @@ import Jobs from "./components/jobs/Jobs";
 import Applications from "./components/applications/Applications";
 import "./App.css";
 
-// Define available pages
-type Page = "dashboard" | "jobs" | "applications";
-
 function App() {
   // Auth state
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("John Doe");
 
   // Navigation state
-  const [currentPage, setCurrentPage] = useState<Page>("dashboard");
+  const [currentPage, setCurrentPage] = useState("dashboard");
 
   // Handle login
-  const handleLogin = (email: string, password: string) => {
+  const handleLogin = (email, password) => {
     console.log("Login attempt with:", { email, password });
     // In a real app, this would validate credentials with an API
     setIsLoggedIn(true);
   };
 
   // Handle page navigation
-  const handleNavigation = (page: Page) => {
+  const handleNavigation = (page) => {
     setCurrentPage(page);
   };
 

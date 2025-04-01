@@ -1,16 +1,9 @@
 "use client";
 
-import type React from "react";
 import { useState } from "react";
 import "./Applications.css";
 
-type Page = "dashboard" | "jobs" | "applications";
-
-interface ApplicationsProps {
-  onNavigate: (page: Page) => void;
-}
-
-const Applications: React.FC<ApplicationsProps> = ({ onNavigate }) => {
+const Applications = ({ onNavigate }) => {
   const [applications] = useState([
     {
       id: 1,
@@ -50,7 +43,7 @@ const Applications: React.FC<ApplicationsProps> = ({ onNavigate }) => {
     },
   ]);
 
-  const getStatusClass = (status: string) => {
+  const getStatusClass = (status) => {
     switch (status) {
       case "Applied":
         return "status-applied";
@@ -65,7 +58,7 @@ const Applications: React.FC<ApplicationsProps> = ({ onNavigate }) => {
     }
   };
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString) => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat("en-US", {
       month: "short",

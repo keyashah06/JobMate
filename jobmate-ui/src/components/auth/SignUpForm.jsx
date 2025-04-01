@@ -1,18 +1,9 @@
 "use client";
 
-import type React from "react";
 import { useState } from "react";
 import "./SignUpForm.css";
 
-interface SignUpFormProps {
-  onLoginClick: (e: React.MouseEvent) => void;
-  onSignupSuccess?: (name: string, email: string, password: string) => void;
-}
-
-const SignUpForm: React.FC<SignUpFormProps> = ({
-  onLoginClick,
-  onSignupSuccess,
-}) => {
+const SignUpForm = ({ onLoginClick, onSignupSuccess }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,7 +11,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setError("");
 

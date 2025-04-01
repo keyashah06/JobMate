@@ -1,18 +1,13 @@
 "use client";
 
-import type React from "react";
 import { useState, useEffect } from "react";
 import LoginForm from "./LoginForm";
 import SignUpForm from "./SignUpForm";
 import "./LoginPage.css";
 
-interface LoginPageProps {
-  onLoginSuccess?: (email: string, password: string) => void;
-}
-
-const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
+const LoginPage = ({ onLoginSuccess }) => {
   // State management
-  const [activeTab, setActiveTab] = useState<"login" | "signup">("login");
+  const [activeTab, setActiveTab] = useState("login");
   const [mounted, setMounted] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
@@ -25,33 +20,29 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
   }, []);
 
   // Handle navigation between tabs
-  const handleTabChange = (tab: "login" | "signup") => {
+  const handleTabChange = (tab) => {
     setActiveTab(tab);
   };
 
-  const handleSignUpLinkClick = (e: React.MouseEvent) => {
+  const handleSignUpLinkClick = (e) => {
     e.preventDefault();
     handleTabChange("signup");
   };
 
-  const handleLoginLinkClick = (e: React.MouseEvent) => {
+  const handleLoginLinkClick = (e) => {
     e.preventDefault();
     handleTabChange("login");
   };
 
   // Handle login success
-  const handleLoginFormSuccess = (email: string, password: string) => {
+  const handleLoginFormSuccess = (email, password) => {
     if (onLoginSuccess) {
       onLoginSuccess(email, password);
     }
   };
 
   // Handle signup success
-  const handleSignupSuccess = (
-    name: string,
-    email: string,
-    password: string
-  ) => {
+  const handleSignupSuccess = (name, email, password) => {
     console.log("Signup successful:", { name, email });
     // In a real app, this would register the user with an API
 
@@ -60,13 +51,13 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
   };
 
   // Password reset functionality
-  const handleForgotPasswordClick = (e: React.MouseEvent) => {
+  const handleForgotPasswordClick = (e) => {
     e.preventDefault();
     setModalOpen(true);
     setResetSuccess(false);
   };
 
-  const handleResetPassword = (e: React.FormEvent) => {
+  const handleResetPassword = (e) => {
     e.preventDefault();
 
     if (!resetEmail) {
@@ -93,7 +84,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
   };
 
   // Close modal when clicking outside
-  const handleModalOverlayClick = (e: React.MouseEvent) => {
+  const handleModalOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
       setModalOpen(false);
     }

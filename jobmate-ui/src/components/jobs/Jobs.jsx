@@ -1,19 +1,12 @@
 "use client";
 
-import type React from "react";
 import { useState } from "react";
 import "./Jobs.css";
 
-type Page = "dashboard" | "jobs" | "applications";
-
-interface JobsProps {
-  onNavigate: (page: Page) => void;
-}
-
-const Jobs: React.FC<JobsProps> = ({ onNavigate }) => {
+const Jobs = ({ onNavigate }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [location, setLocation] = useState("");
-  const [jobType, setJobType] = useState<string>("");
+  const [jobType, setJobType] = useState("");
 
   const jobTypes = [
     "Full-time",
@@ -125,7 +118,7 @@ const Jobs: React.FC<JobsProps> = ({ onNavigate }) => {
     return matchesTerm && matchesLocation && matchesType;
   });
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = (e) => {
     e.preventDefault();
     // In a real app, this could trigger an API call
     console.log("Searching for:", { searchTerm, location, jobType });

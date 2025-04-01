@@ -1,17 +1,9 @@
 "use client";
 
-import type React from "react";
 import { useState } from "react";
 import "./Dashboard.css";
 
-type Page = "dashboard" | "jobs" | "applications";
-
-interface DashboardProps {
-  userName: string;
-  onNavigate: (page: Page) => void;
-}
-
-const Dashboard: React.FC<DashboardProps> = ({ userName, onNavigate }) => {
+const Dashboard = ({ userName, onNavigate }) => {
   const [isActivelyLooking, setIsActivelyLooking] = useState(true);
 
   const toggleActiveStatus = () => {

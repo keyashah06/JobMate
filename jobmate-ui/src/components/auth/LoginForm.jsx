@@ -1,16 +1,9 @@
 "use client";
 
-import type React from "react";
 import { useState } from "react";
 import "./LoginForm.css";
 
-interface LoginFormProps {
-  onSignUpClick: (e: React.MouseEvent) => void;
-  onForgotPasswordClick?: (e: React.MouseEvent) => void;
-  onLoginSuccess?: (email: string, password: string) => void;
-}
-
-const LoginForm: React.FC<LoginFormProps> = ({
+const LoginForm = ({
   onSignUpClick,
   onForgotPasswordClick = () => {},
   onLoginSuccess,
@@ -20,7 +13,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
