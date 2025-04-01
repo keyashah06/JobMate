@@ -136,3 +136,39 @@ dist
 .pnp.*
 
 venv
+
+# SQLite database files
+*.sqlite3
+*.db
+/jobmate_backend/db.sqlite3
+/db.sqlite3
+
+# Python related
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Django specific
+/jobmate_backend/media/
+/jobmate_backend/static/
+local_settings.py
+
+# Migration files (optional, usually should be versioned)
+# */migrations/*.py
+# !*/migrations/__init__.py
+
+# IDE specific
+.vscode/
+.idea/
+
+# Backend specific temporary files
+*.pot
+*.mo
+*.sqlite3
+jobmate_backend/db.sqlite3
+jobmate_backend/*.pyc
+__pycache__/
+*.pyc
+/jobmate_backend/auth_app/__pycache__
+/jobmate_backend/resumes/migrations/__pycache__

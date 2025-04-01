@@ -2,13 +2,27 @@
 
 import { useState } from "react";
 import "./Dashboard.css";
+import UploadResume from "../resume/UploadResume";
 
 const Dashboard = ({ userName, onNavigate }) => {
   const [isActivelyLooking, setIsActivelyLooking] = useState(true);
+  const [currentView, setCurrentView] = useState("dashboard");
 
   const toggleActiveStatus = () => {
     setIsActivelyLooking(!isActivelyLooking);
   };
+
+  const handleNavigate = (view) => {
+    setCurrentView(view);
+    if (onNavigate) {
+      onNavigate(view);
+    }
+  };
+
+  // Render the UploadResume component when the view is "upload-resume"
+  if (currentView === "upload-resume") {
+    return <UploadResume userName={userName} onNavigate={handleNavigate} />;
+  }
 
   return (
     <div className="dashboard-page">
@@ -21,7 +35,7 @@ const Dashboard = ({ userName, onNavigate }) => {
               className="nav-link active"
               onClick={(e) => {
                 e.preventDefault();
-                onNavigate("dashboard");
+                handleNavigate("dashboard");
               }}
             >
               Dashboard
@@ -31,7 +45,7 @@ const Dashboard = ({ userName, onNavigate }) => {
               className="nav-link"
               onClick={(e) => {
                 e.preventDefault();
-                onNavigate("jobs");
+                handleNavigate("jobs");
               }}
             >
               Jobs
@@ -41,7 +55,7 @@ const Dashboard = ({ userName, onNavigate }) => {
               className="nav-link"
               onClick={(e) => {
                 e.preventDefault();
-                onNavigate("applications");
+                handleNavigate("applications");
               }}
             >
               Applications
@@ -133,7 +147,12 @@ const Dashboard = ({ userName, onNavigate }) => {
             </div>
             <h3>Upload Resume</h3>
             <p>Let us auto-fill your job applications with your resume data</p>
-            <button className="action-button">Upload Resume</button>
+            <button
+              className="action-button"
+              onClick={() => handleNavigate("upload-resume")}
+            >
+              Upload Resume
+            </button>
           </div>
 
           <div className="action-card">
@@ -155,7 +174,7 @@ const Dashboard = ({ userName, onNavigate }) => {
             <p>Browse through thousands of job opportunities</p>
             <button
               className="action-button"
-              onClick={() => onNavigate("jobs")}
+              onClick={() => handleNavigate("jobs")}
             >
               Search Jobs
             </button>
@@ -230,7 +249,12 @@ const Dashboard = ({ userName, onNavigate }) => {
               <div className="profile-item-content">
                 <span>Resume</span>
               </div>
-              <button className="edit-button">Upload</button>
+              <button
+                className="edit-button"
+                onClick={() => handleNavigate("upload-resume")}
+              >
+                Upload
+              </button>
             </div>
 
             <div className="profile-item">

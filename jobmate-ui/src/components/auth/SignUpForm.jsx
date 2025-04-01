@@ -1,21 +1,58 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import {
+  FiUser,
+  FiMail,
+  FiLock,
+  FiEye,
+  FiEyeOff,
+  FiArrowRight,
+} from "react-icons/fi";
+import Confetti from "react-confetti";
 import "./SignUpForm.css";
 
-const SignUpForm = ({ onLoginClick, onSignupSuccess }) => {
+const SignUpForm = ({ onLoginClick }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [successPopup, setSuccessPopup] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [windowSize, setWindowSize] = useState({
+    width: typeof window !== "undefined" ? window.innerWidth : 0,
+    height: typeof window !== "undefined" ? window.innerHeight : 0,
+  });
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const handleResize = () => {
+        setWindowSize({
+          width: window.innerWidth,
+          height: window.innerHeight,
+        });
+      };
+
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (successPopup) {
+      setShowConfetti(true);
+      const timer = setTimeout(() => setShowConfetti(false), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [successPopup]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
-    // Basic validation
     if (!name || !email || !password || !confirmPassword) {
       setError("Please fill out all fields");
       return;
@@ -28,179 +65,183 @@ const SignUpForm = ({ onLoginClick, onSignupSuccess }) => {
 
     setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      console.log("Signup attempt with:", { name, email, password });
+    try {
+      const response = await fetch("http://127.0.0.1:8000/auth/register/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: email,
+          email,
+          password,
+        }),
+      });
 
-      // For demo purposes, let's consider any signup successful
-      if (onSignupSuccess) {
-        onSignupSuccess(name, email, password);
+      const data = await response.json();
+      if (response.ok) {
+        setSuccessPopup(true);
+      } else {
+        setError(data.error || "Something went wrong");
       }
-
+    } catch {
+      setError("Could not connect to server");
+    } finally {
       setIsLoading(false);
-      // Here you would typically call your auth API
-    }, 1000);
+    }
   };
+
+  // Extract first name for greeting
+  const firstName = name.split(" ")[0];
 
   return (
     <div className="signup-form-wrapper">
-      <h2 className="form-title">Create an account</h2>
-      <p className="form-subtitle">
-        Join JobMate to find your perfect job match
-      </p>
-
-      {error && (
-        <div
-          style={{
-            color: "#ef4444",
-            backgroundColor: "#fee2e2",
-            padding: "0.5rem",
-            borderRadius: "0.375rem",
-            marginBottom: "1rem",
-            fontSize: "0.875rem",
-          }}
-        >
-          {error}
-        </div>
+      {showConfetti && (
+        <Confetti
+          width={windowSize.width}
+          height={windowSize.height}
+          recycle={false}
+          numberOfPieces={200}
+          colors={["#7c3aed", "#8b5cf6", "#a78bfa", "#c4b5fd", "#ddd6fe"]}
+          style={{ position: "fixed", top: 0, left: 0, zIndex: 1000 }}
+        />
       )}
 
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <div className="input-icon-wrapper">
-            <span className="input-icon">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
+      {successPopup ? (
+        <div className="polished-success-popup">
+          <div className="success-icon-container">
+            <svg
+              className="checkmark"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 52 52"
+            >
+              <circle
+                className="checkmark-circle"
+                cx="26"
+                cy="26"
+                r="25"
                 fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-              </svg>
-            </span>
-            <input
-              type="text"
-              placeholder="Full Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
+              />
+              <path
+                className="checkmark-check"
+                fill="none"
+                d="M14.1 27.2l7.1 7.2 16.7-16.8"
+              />
+            </svg>
           </div>
+
+          <h2 className="success-title">Hey, {firstName}!</h2>
+          <p className="success-message">Welcome to JobMate!</p>
+
+          <button onClick={onLoginClick} className="polished-success-button">
+            Go to Login
+          </button>
         </div>
+      ) : (
+        <>
+          <h2 className="form-title">Create an account</h2>
+          <p className="form-subtitle">
+            Join JobMate to find your perfect job match
+          </p>
 
-        <div className="form-group">
-          <div className="input-icon-wrapper">
-            <span className="input-icon">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                <polyline points="22,6 12,13 2,6"></polyline>
-              </svg>
-            </span>
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-        </div>
+          {error && <div className="error-message">{error}</div>}
 
-        <div className="form-group">
-          <div className="input-icon-wrapper">
-            <span className="input-icon">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                <path d="M7 11V7a5 5 0 0110 0v4"></path>
-              </svg>
-            </span>
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-        </div>
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <div className="input-icon-wrapper">
+                <span className="input-icon">
+                  <FiUser />
+                </span>
+                <input
+                  type="text"
+                  placeholder="Full Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
 
-        <div className="form-group">
-          <div className="input-icon-wrapper">
-            <span className="input-icon">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                <path d="M7 11V7a5 5 0 0110 0v4"></path>
-              </svg>
-            </span>
-            <input
-              type="password"
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
-          </div>
-        </div>
+            <div className="form-group">
+              <div className="input-icon-wrapper">
+                <span className="input-icon">
+                  <FiMail />
+                </span>
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
 
-        <button type="submit" className="sign-up-button" disabled={isLoading}>
-          {isLoading ? (
-            <>
-              <span className="loading-spinner"></span>
-              Creating account...
-            </>
-          ) : (
-            <>
-              Create Account
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </>
-          )}
-        </button>
-      </form>
+            <div className="form-group">
+              <div className="input-icon-wrapper">
+                <span className="input-icon">
+                  <FiLock />
+                </span>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <FiEyeOff /> : <FiEye />}
+                </button>
+              </div>
+            </div>
 
-      <p className="login-prompt">
-        Already have an account?{" "}
-        <a href="#" onClick={onLoginClick} className="login-link">
-          Login
-        </a>
-      </p>
+            <div className="form-group">
+              <div className="input-icon-wrapper">
+                <span className="input-icon">
+                  <FiLock />
+                </span>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Confirm Password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              className="sign-up-button"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <span className="loading-spinner"></span>
+                  Creating account...
+                </>
+              ) : (
+                <>
+                  Create Account
+                  <FiArrowRight style={{ marginLeft: "8px" }} />
+                </>
+              )}
+            </button>
+          </form>
+
+          <p className="login-prompt">
+            Already have an account?{" "}
+            <a href="#" onClick={onLoginClick} className="login-link">
+              Login
+            </a>
+          </p>
+        </>
+      )}
     </div>
   );
 };
