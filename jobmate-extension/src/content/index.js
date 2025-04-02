@@ -21,13 +21,13 @@ function identifyFormFields() {
   console.log("Identified Form Fields:", formFields);
   
   // Optional: You could also add visual cues to the form fields
-  highlightFields(inputs);
+  //highlightFields(inputs);
 }
 
 // Function to highlight identified form fields on the page
 function highlightFields(fields) {
   fields.forEach(field => {
-    field.style.border = '2px solid red'; // Example of highlighting
+    field.style.border = '1px solid white'; // Example of highlighting
   });
 }
 
@@ -50,7 +50,7 @@ function autofillJobApplication() {
         fieldElement.value = 'john.doe@gmail.com';
       }
       else if ((fieldElement.name || fieldElement.id).includes("phone")) {
-        fieldElement.value = '555-1234';
+        fieldElement.value = '555-1234-6987';
       }
     }
   }
