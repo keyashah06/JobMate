@@ -98,7 +98,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "jobmate_db",
         "USER": "postgres",
-        "PASSWORD": "Lord/4337U",
+        "PASSWORD": "potato",
         "HOST": "localhost",
         "PORT": "5432"
     }

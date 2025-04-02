@@ -29,6 +29,7 @@ const LoginSignup = () => {
       if (response.ok) {
         setMessage("Login successful");
         localStorage.setItem("token", data.token);
+        document.cookie = `token=${data.token}; path=/; Secure; SameSite=None;`;
         navigate("/UploadResume");
       } else {
         setError(data.error || "LOGIN FAILED");

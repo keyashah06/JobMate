@@ -15,6 +15,18 @@ from skillNer.general_params import SKILL_DB
 from skillNer.skill_extractor_class import SkillExtractor
 import json
 
+#ML
+import numpy as np
+from sentence_transformers import SentenceTransformer, util
+from .models import Resume
+import torch
+import matplotlib.pyplot as plt
+import nltk
+nltk.download("stopwords")
+from nltk.corpus import stopwords
+
+
+
 nlp = spacy.load("en_core_web_sm")
 matcher = Matcher(nlp.vocab)
 
@@ -167,12 +179,46 @@ def extract_text_from_docx(uploaded_file):
 
 
 
+#ML
+
+sbert_model = SentenceTransformer("all-MiniLM-L6-v2")
+stop_words = set(stopwords.words("english"))
+
+def compute_match_score(job_description, user):
+    try:
+        resume = Resume.objects.get(user=user)
+        resume_text = f"{resume.name} {resume.education} {resume.experience} {resume.skills} {resume.projects}"
+        resume_text = resume_text.replace("{", "").replace("}", "").replace("[", "").replace("]", "").replace('"', '')
+
+        resume_embedding = sbert_model.encode(resume_text, convert_to_tensor = True)
+        job_desc_embedding = sbert_model.encode(job_description, convert_to_tensor = True)
+
+        
+        similarity_score = util.pytorch_cos_sim(resume_embedding, job_desc_embedding).item()
+        match_percentage = round(similarity_score * 100, 2)
+       
+        resume_words = set(resume_text.lower().split())
+        job_words = job_description.lower().split()
+        important_words = list(set([word for word in job_words if word in resume_words and word not in stop_words]))
+
+        return {
+            "match_percentage": match_percentage,
+            "important_words": important_words
+        }
+      
+    
+    except Resume.DoesNotExist:
+        return {"error": "Resume not found for user"}
+    except Exception as e:
+       return {"error": str(e)}
+    
+
+
+
+
 @api_view(["POST"])
 @parser_classes([MultiPartParser, FormParser])
 def upload_resume(request):
-
-
-   
    if "file" not in request.FILES:
       return Response({"error": "No file uploaded"}, status=status.HTTP_400_BAD_REQUEST)
    uploaded_file = request.FILES["file"]
@@ -231,3 +277,18 @@ def upload_resume(request):
       }, status = status.HTTP_201_CREATED)
 
   
+@api_view(["POST"])
+def match_job(request):
+   print("hi")
+   job_description = request.data.get("job_description", "")
+   print("step 2")
+   if not job_description:
+      return Response({"error": "Job description is required"}, status=400)
+   
+   print("hellooo")
+   user = request.user
+   print("step 3")
+   result = compute_match_score(job_description, user)
+   print(result)
+   print("step 4")
+   return Response(result, status=200 if  result else 404)
