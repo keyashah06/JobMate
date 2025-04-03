@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from auth_app.views import login_view, register_view, reset_password_view
-from resumes.views import upload_resume
+from resumes.views import upload_resume, match_job
 
 
 urlpatterns = [
@@ -26,6 +26,8 @@ urlpatterns = [
     path("auth/register/", register_view, name = "register"),
     path("auth/reset_password/", reset_password_view, name = "reset_password"),
     path("resumes/upload/", upload_resume, name = "upload_resume"),
-    
+    path("resumes/match_job/", match_job, name = "match_job"),
 ]
+    
+
 

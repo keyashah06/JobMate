@@ -2,9 +2,6 @@
   "version": "1.0.0",
   "manifest_version": 3,
   "name": "JobMate Extension",
-  "permissions": [
-    "activeTab"
-  ],
   "description": "JobMate's Chrome Extension",
   "action": {
     "default_popup": "index.html",
@@ -19,7 +16,17 @@
       "js": ["contentScript.js"]
     }
   ],
+  "permissions": [
+    "scripting",
+    "activeTab",
+    "cookies"
+  ],
+
   "host_permissions": [
-    "http://127.0.0.1:8000/*"
-  ]
+    "http://*/*",
+    "https://*/*"
+  ],
+  "externally_connectable": {
+    "matches": ["http://localhost:3000/*"]
+  }
 }

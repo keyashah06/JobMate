@@ -43,8 +43,16 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "jobmate_backend",
     "corsheaders",
-    "resumes"
+    "resumes",
+    
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    
+}
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000"
@@ -90,7 +98,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "jobmate_db",
         "USER": "postgres",
-        "PASSWORD": "Lord/4337U",
+        "PASSWORD": "potato",
         "HOST": "localhost",
         "PORT": "5432"
     }
