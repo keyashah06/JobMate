@@ -36,7 +36,7 @@ function Start-Backend {
     # Check if virtual environment exists, create it if it doesn't
     if (-not (Test-Path -Path "..\venv" -PathType Container)) {
         Write-ColorOutput "Creating virtual environment..." "Yellow"
-        python3.11 -m venv ..\venv
+        py -m venv ..\venv
         Write-ColorOutput "Virtual environment created!" "Green"
     }
 
