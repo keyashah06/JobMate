@@ -26,7 +26,7 @@ start_backend() {
     # Check if virtual environment exists, create it if it doesn't
     if [ ! -d "../venv" ]; then
         echo -e "${YELLOW}Creating virtual environment...${NC}"
-        python3 -m venv ../venv
+        python3.11 -m venv ../venv
         echo -e "${GREEN}Virtual environment created!${NC}"
     fi
 
