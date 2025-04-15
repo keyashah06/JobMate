@@ -19,7 +19,8 @@
   "permissions": [
     "scripting",
     "activeTab",
-    "cookies"
+    "cookies", 
+    "tabs"
   ],
 
   "host_permissions": [

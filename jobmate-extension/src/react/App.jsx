@@ -6,6 +6,40 @@ const App = () => {
   const [loading, setLoading] = useState(false);
   const [matchScore, setMatchScore] = useState(null);
 
+  const sendResumeDetails = async () => {
+    const token = await getToken();
+    var data = null;
+    if (token) {
+      console.log("Token retrieved for getResumeDetails: ", token);
+    } else {
+      console.log("Token not found for getResumeDetails");
+    }
+    
+    try {
+      const response = await fetch('http://localhost:8000/resumes/get_details/', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Token ${token}`,
+          "Content-Type": "application/json",
+        }, 
+        //body: JSON.stringify({ job_description: jobDesc }),
+      });
+      console.log(response);
+      data = await response.json();
+      if (response.ok) {
+        //alert("User Resume Details from app.jsx:" + data);
+      } else {
+        alert("Error: " + data.message);
+      }
+    } catch (error) {  
+      console.error("Request failed:", error);
+    }
+
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      chrome.tabs.sendMessage(tabs[0].id, { action: 'sendResumeDetails', payload: data  });
+    });   
+  };
+  
   const extractJobDesc = async () => {
     return new Promise((resolve) => {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -43,8 +77,8 @@ const App = () => {
           resolve(null);
         }
       });
-    })};
-
+    })  
+  };
 
   const handleButtonClick = async () => {
     setLoading(true);
@@ -52,18 +86,16 @@ const App = () => {
     if (!jobDesc) {
       alert("No job description found");
       setLoading(false);
-
-  
       return;
     }
     const token = await getToken();
+    print(token);
     if (token) {
-      console.log("Token retrirved: ", token);
+      console.log("Token retrieved: ", token);
     } else {
       console.log("Token not found");
     }
     
- 
     try {
       const response = await fetch('http://localhost:8000/resumes/match_job/', {
         method: 'POST',
@@ -71,7 +103,6 @@ const App = () => {
           'Authorization': `Token ${token}`,
           "Content-Type": "application/json",
         },
-        
         body: JSON.stringify({ job_description: jobDesc }),
       });
       print(response);
@@ -90,6 +121,7 @@ const App = () => {
   };
   
   const autofillForm = () => {
+    sendResumeDetails();
     // Send a message to the content script to change the background color
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       chrome.tabs.sendMessage(tabs[0].id, { action: 'autofillJobApplication' });
@@ -100,7 +132,7 @@ const App = () => {
     <main style = {{display: 'block', width: '250px', background: '#fff', margin: 'auto', alignItems: 'center', justifyContent: 'center', padding: '10px', textAlign: 'center'}}>
       <h2 className='text' style={{color: '#3c009d', fontSize: '30px', fontWeight: '700'}}>JobMate</h2>
       <br></br>
-      <div style = {{color: 'white', justifyContent: 'center', width: '200px',  background: '#4c00b4', alignItems: 'center', borderRadius: '10px', fontSize: '19px', cursor: 'pointer', textAlign: 'center', padding: '15px'}} 
+      <div style = {{ fontWeight: 'bold', padding: '12px 25px', color: 'white', justifyContent: 'center', alignItems: 'center', textAlign: 'center', width: '80%', background: '#4c00b4', borderRadius: '10px', fontSize: '16px', cursor: 'pointer',}} 
       className='submit' id='apply' onClick={autofillForm}>
       Apply
       </div>

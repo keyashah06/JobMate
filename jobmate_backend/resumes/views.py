@@ -292,3 +292,28 @@ def match_job(request):
    print(result)
    print("step 4")
    return Response(result, status=200 if  result else 404)
+
+@api_view(["GET"])
+def get_resume_details(request):
+   user = request.user
+   print("user")
+   print(user)
+   try:
+      resume = Resume.objects.get(user=user)
+      resume_data = {
+         "name": resume.name,
+         "email": resume.email,
+         "phone": resume.phone,
+         "education": json.loads(resume.education),
+         "experience": resume.experience,
+         "skills": json.loads(resume.skills),
+         "projects": resume.projects,
+        # "resume_file": resume.resume_file
+      }
+      print("resume_data")
+      print(resume_data)
+      return Response(resume_data, status=status.HTTP_200_OK)
+   except Resume.DoesNotExist:
+      return Response({"error": "Resume not found"}, status=status.HTTP_404_NOT_FOUND)
+   except Exception as e:
+      return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
