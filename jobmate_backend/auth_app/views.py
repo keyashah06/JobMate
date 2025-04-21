@@ -1,3 +1,4 @@
+import os
 from django.contrib.auth import login
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
@@ -13,7 +14,6 @@ from datetime import timedelta
 from django.utils import timezone
 from django.contrib.auth import authenticate
 from django.views.decorators.csrf import csrf_exempt
-
 
 # Helper function to generate MFA codes
 def generate_mfa_code():
@@ -179,3 +179,12 @@ def resend_mfa_code(request):
     except Exception as e:
         print(f"ERROR resending MFA: {e}")
         return Response({"message": "Something went wrong."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+# views.py UPDATED
+@api_view(["GET"])
+def proxy_serpapi(_):
+    import requests
+    SERPAPI_KEY = os.getenv("SERPAPI_KEY")
+    url = f"https://serpapi.com/search.json?engine=google_jobs&q=work from home&location=United States&hl=en&api_key={SERPAPI_KEY}"
+    response = requests.get(url)
+    return JsonResponse(response.json())

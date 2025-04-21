@@ -34,15 +34,23 @@ const Dashboard = () => {
               to="/phishing-detection"
               className="block bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition"
             >
-              Manually Check a Job for Scams
+              Manually Check a Job for Scams |
             </Link>
 
             <Link
-              to="/live-jobs"
+              to="/live-job-scan"
               className="block bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition"
             >
-              🔍 Scan Live Job Postings
+              | Scan Live Job Postings | 
             </Link>
+
+            <Link
+              to="/phishing-scanner"
+              className="block bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition"
+            >
+              🔍 Unified Job Scan Page
+</Link>
+
 
             <button
               onClick={handleLogout}
