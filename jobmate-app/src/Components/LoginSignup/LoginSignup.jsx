@@ -3,6 +3,7 @@ import { TbUser, TbMail, TbLock } from "react-icons/tb";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import './Auth.css';
+import './LoginSignup.css'; // Import the CSS file for styling
 
 const LoginSignup = () => {
   const [action, setAction] = useState("Login");
@@ -34,11 +35,15 @@ const LoginSignup = () => {
   
       if (response.ok && data.mfa_required) {
         setMessage("Login successful. MFA code sent.");
-        localStorage.setItem("email", email); // Store email for MFA verification
-        navigate("/verify-mfa"); // Go to MFA verification page first!
+        localStorage.setItem("email", email);
+        navigate("/verify-mfa");
+      } else if (response.ok && data.token) {
+        localStorage.setItem("jobmate_token", data.token);  // ✅ Store token!
+        localStorage.setItem("email", email);
+        navigate("/dashboard");  // or wherever you want to redirect
       } else {
         setError(data.message || "LOGIN FAILED");
-      }
+      }      
     } catch (err) {
       console.error("ERROR during login:", err);
       setError("Something went wrong. Check console for details.");

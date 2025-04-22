@@ -34,7 +34,7 @@ const VerifyMFA = () => {
 
       if (response.ok) {
         setMessage("✅ MFA verified. Redirecting to dashboard...");
-        localStorage.setItem("token", data.token); // Save token
+        localStorage.setItem("token", data.token); // Store token
         setTimeout(() => navigate("/dashboard"), 2000); // Redirect after 2s delay
       } else {
         setError(data.message || "❌ MFA verification failed.");
