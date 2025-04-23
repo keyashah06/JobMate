@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 import os
 from pathlib import Path
+import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv()
@@ -25,10 +26,21 @@ INSTALLED_APPS = [
     # Third-party
     "rest_framework",
     "rest_framework.authtoken",
+    "jobmate_backend",
     "corsheaders",
+    "resumes",
+    
 ]
 
-# Middleware
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    
+}
+
+CORS_ALLOW_ALL_ORIGINS = True
+
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
@@ -86,16 +98,25 @@ TEMPLATES = [
 WSGI_APPLICATION = "jobmate_backend.wsgi.application"
 
 # Database
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "jobmate_db",
-        "USER": "postgres",
-        "PASSWORD": "potato",
-        "HOST": "localhost",
-        "PORT": "5432"
+
+if os.environ.get("pg") == "1":
+     DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": "jobmate_db",
+            "USER": "postgres",
+            "PASSWORD": "potato",
+            "HOST": "localhost",
+            "PORT": "5432",
+        }
+    }
 
 # Password Validators
 AUTH_PASSWORD_VALIDATORS = [
