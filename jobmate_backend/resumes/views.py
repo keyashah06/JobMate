@@ -221,6 +221,7 @@ def compute_match_score(job_description, user):
 def upload_resume(request):
    if "file" not in request.FILES:
       return Response({"error": "No file uploaded"}, status=status.HTTP_400_BAD_REQUEST)
+   
    uploaded_file = request.FILES["file"]
    if uploaded_file.name.endswith(".pdf"):
       text = extract_text_from_pdf(uploaded_file)
@@ -229,7 +230,7 @@ def upload_resume(request):
    else:
       return Response({"error": "Unsupported file format"}, status=status.HTTP_400_BAD_REQUEST)
    
-  
+   # Extract data
    email = extract_email(text)
    phone_number = extract_phone_number(text)
    name = extract_name(text)
@@ -238,9 +239,19 @@ def upload_resume(request):
    projects = extract_projects(text)
    education = extract_education(text)
    
-
+   # Create response data dictionary
+   extracted_data = {
+      "name": name,
+      "email": email,
+      "phone": phone_number,
+      "skills": skills,
+      "education": education,
+      "experience": experience,
+      "projects": projects
+   }
+   
    user = request.user
-  
+   
    try:
       resume = Resume.objects.get(user=user)
       resume.name = name
@@ -253,10 +264,11 @@ def upload_resume(request):
       resume.resume_file = uploaded_file
       resume.save()
      
-      return Response ({
+      return Response({
          "message": "Resume updated successfully",
-         "resume_id": resume.id
-      }, status = status.HTTP_200_OK)
+         "resume_id": resume.id,
+         **extracted_data  # Include all extracted data
+      }, status=status.HTTP_200_OK)
 
    except Resume.DoesNotExist:
       resume = Resume.objects.create(
@@ -271,10 +283,11 @@ def upload_resume(request):
          resume_file=uploaded_file
       )
      
-      return Response ({
+      return Response({
          "message": "Resume uploaded and saved successfully",
-         "resume_id": resume.id
-      }, status = status.HTTP_201_CREATED)
+         "resume_id": resume.id,
+         **extracted_data  # Include all extracted data
+      }, status=status.HTTP_201_CREATED)
 
   
 @api_view(["POST"])

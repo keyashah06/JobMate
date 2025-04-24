@@ -1,0 +1,401 @@
+:root {
+    --primary-color: #7c3aed; /* Purple from the mockup */
+    --primary-dark: #6d28d9;
+    --primary-darker: #5b21b6;
+    --primary-light: #8b5cf6;
+    --primary-lighter: #a78bfa;
+    --secondary-color: #f3f4f6;
+    --text-color: #111827;
+    --light-text: #6b7280;
+    --white: #ffffff;
+    --light-bg: #f9fafb;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --error-color: #ef4444;
+    --info-color: #3b82f6;
+  }
+  
+  .applications-page {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--light-bg);
+    min-height: 100vh;
+  }
+  
+  /* Header styles - shared with dashboard */
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: var(--white);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  }
+  
+  .logo-section {
+    display: flex;
+    align-items: center;
+  }
+  
+  .app-logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-right: 2rem;
+  }
+  
+  .main-nav {
+    display: flex;
+    gap: 1.5rem;
+  }
+  
+  .nav-link {
+    color: var(--light-text);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 0;
+    position: relative;
+    transition: color 0.3s ease;
+  }
+  
+  .nav-link:hover {
+    color: var(--text-color);
+  }
+  
+  .nav-link.active {
+    color: var(--primary-color);
+  }
+  
+  .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--primary-color);
+  }
+  
+  .user-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .notification-button, .settings-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+  }
+  
+  .notification-button:hover, .settings-button:hover {
+    background-color: var(--secondary-color);
+  }
+  
+  .notification-button svg, .settings-button svg {
+    width: 20px;
+    height: 20px;
+    color: var(--light-text);
+  }
+  
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  
+  /* Applications page specific styles */
+  .applications-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  .applications-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .applications-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .applications-header h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-color);
+  }
+  
+  .applications-filters {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .filter-select, .sort-select {
+    padding: 0.5rem 2rem 0.5rem 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 16px;
+    background-color: var(--white);
+  }
+  
+  .filter-select:focus, .sort-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+  }
+  
+  /* Applications summary cards */
+  .applications-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .summary-card {
+    background-color: var(--white);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .summary-value {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+  }
+  
+  .summary-label {
+    color: var(--light-text);
+    font-size: 0.9rem;
+  }
+  
+  /* Applications table */
+  .applications-list {
+    background-color: var(--white);
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  .applications-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .applications-table th {
+    text-align: left;
+    padding: 1rem;
+    font-weight: 500;
+    color: var(--light-text);
+    background-color: var(--secondary-color);
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .applications-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    color: var(--text-color);
+  }
+  
+  .applications-table tr:last-child td {
+    border-bottom: none;
+  }
+  
+  .applications-table tr:hover {
+    background-color: var(--light-bg);
+  }
+  
+  .job-info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .job-title {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+  }
+  
+  .job-location {
+    font-size: 0.85rem;
+    color: var(--light-text);
+  }
+  
+  /* Status badges */
+  .status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+  
+  .status-applied {
+    background-color: #e0f2fe;
+    color: #0369a1;
+  }
+  
+  .status-interview {
+    background-color: #fef3c7;
+    color: #d97706;
+  }
+  
+  .status-offer {
+    background-color: #dcfce7;
+    color: #15803d;
+  }
+  
+  .status-rejected {
+    background-color: #fee2e2;
+    color: #b91c1c;
+  }
+  
+  /* Action buttons */
+  .action-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .action-button {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .action-button svg {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .view-button {
+    color: var(--info-color);
+  }
+  
+  .view-button:hover {
+    background-color: rgba(59, 130, 246, 0.1);
+  }
+  
+  .edit-button {
+    color: var(--warning-color);
+  }
+  
+  .edit-button:hover {
+    background-color: rgba(245, 158, 11, 0.1);
+  }
+  
+  .delete-button {
+    color: var(--error-color);
+  }
+  
+  .delete-button:hover {
+    background-color: rgba(239, 68, 68, 0.1);
+  }
+  
+  /* Add application button */
+  .add-application {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+  
+  .add-application-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .add-application-button:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .add-application-button svg {
+    width: 18px;
+    height: 18px;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .dashboard-header {
+      padding: 1rem;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .logo-section {
+      margin-bottom: 1rem;
+      width: 100%;
+      justify-content: space-between;
+    }
+    
+    .user-section {
+      width: 100%;
+      justify-content: flex-end;
+    }
+    
+    .applications-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    
+    .applications-filters {
+      width: 100%;
+    }
+    
+    .filter-select, .sort-select {
+      flex: 1;
+    }
+    
+    .applications-table {
+      display: block;
+      overflow-x: auto;
+    }
+    
+    .summary-card {
+      padding: 1rem;
+    }
+  }

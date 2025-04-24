@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from auth_app.views import login_view, register_view, reset_password_view
 from resumes.views import upload_resume, match_job, get_resume_details
-
+from jobmate_backend.linkedin_api import linkedin_jobs, linkedin_job_details
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -28,6 +28,9 @@ urlpatterns = [
     path("resumes/upload/", upload_resume, name = "upload_resume"),
     path("resumes/match_job/", match_job, name = "match_job"),
     path("resumes/get_details/", get_resume_details, name = "get_resume_details"),
+    path("api/linkedin/jobs/", linkedin_jobs, name="linkedin_jobs"),
+    path("api/linkedin/jobs/<int:job_id>/", linkedin_job_details, name="linkedin_job_details"),
+    
 ]
     
 
