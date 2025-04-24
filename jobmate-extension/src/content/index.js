@@ -84,7 +84,6 @@ async function autofillJobApplication() {
     const fieldElement = formFields[i];
     var fieldAttributes = fieldElement.attributes;
     for (let attr of fieldAttributes) {
-      //if (resumeFields.includes(attr.value)) {
       console.log(`Attribute Name: ${attr.name}, Value: ${attr.value}`);
       if (/first/.test(attr.value.toLowerCase())) { 
         fieldElement.value = userResumeDetails.name.split(" ")[0];
@@ -92,19 +91,15 @@ async function autofillJobApplication() {
       else if (/last/.test(attr.value.toLowerCase())) { 
         fieldElement.value = userResumeDetails.name.split(" ")[1];
       }
-      // if (/name/.test(attr.value)) { 
-      //   countNames += 1;
-      //   if (countNames === 1) {
-      //     fieldElement.value = userResumeDetails.name.split(" ")[0];
-      //   }
-      //   else if (countNames > 1) { fieldElement.value = userResumeDetails.name.split(" ")[1]; }
-      // }
-      else if (attr.value.includes("email")) {
+      else if (/email/.test(attr.value.toLowerCase())) {
         fieldElement.value = userResumeDetails.email;
       }
-      else if (attr.value.includes("phone")) {
+      else if (/phone/.test(attr.value.toLowerCase())) {
         fieldElement.value = handlePhoneField(userResumeDetails.phone);
-      } 
+      }
+      //else if () {}
+      /* skills, education, address, educational institution, degree, 
+      references with contact information, citizenship, military service */
     }
   }
 }
