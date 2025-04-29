@@ -1,0 +1,660 @@
+:root {
+    --primary-color: #7c3aed; /* Purple from the mockup */
+    --primary-dark: #6d28d9;
+    --primary-darker: #5b21b6;
+    --primary-light: #8b5cf6;
+    --primary-lighter: #a78bfa;
+    --secondary-color: #f3f4f6;
+    --text-color: #111827;
+    --light-text: #6b7280;
+    --white: #ffffff;
+    --light-bg: #f9fafb;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --error-color: #ef4444;
+    --info-color: #3b82f6;
+  }
+  
+  .profile-page {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--light-bg);
+    min-height: 100vh;
+  }
+  
+  /* Header styles - shared with dashboard */
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: var(--white);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  
+  .logo-section {
+    display: flex;
+    align-items: center;
+  }
+  
+  .app-logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-right: 2rem;
+  }
+  
+  .main-nav {
+    display: flex;
+    gap: 1.5rem;
+  }
+  
+  .nav-link {
+    color: var(--light-text);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 0;
+    position: relative;
+    transition: color 0.3s ease;
+  }
+  
+  .nav-link:hover {
+    color: var(--text-color);
+  }
+  
+  .nav-link.active {
+    color: var(--primary-color);
+  }
+  
+  .nav-link.active::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--primary-color);
+  }
+  
+  .user-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .notification-button,
+  .settings-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+  }
+  
+  .notification-button:hover,
+  .settings-button:hover {
+    background-color: var(--secondary-color);
+  }
+  
+  .notification-button svg,
+  .settings-button svg {
+    width: 20px;
+    height: 20px;
+    color: var(--light-text);
+  }
+  
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .user-avatar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+  
+  .user-avatar.active {
+    box-shadow: 0 0 0 2px white, 0 0 0 4px var(--primary-color);
+  }
+  
+  /* Profile content styles */
+  .profile-content {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  .profile-header {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+  }
+  
+  .profile-avatar {
+    width: 100px;
+    height: 100px;
+    background-color: var(--primary-lighter);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  
+  .profile-avatar-inner {
+    width: 90px;
+    height: 90px;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2rem;
+    font-weight: 600;
+  }
+  
+  .profile-title h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+  }
+  
+  .profile-subtitle {
+    color: var(--light-text);
+    font-size: 1rem;
+  }
+  
+  .profile-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .profile-section {
+    background-color: var(--white);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--secondary-color);
+  }
+  
+  .section-header h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-color);
+  }
+  
+  .edit-button {
+    background: var(--secondary-color);
+    border: 2px solid var(--primary-light);
+    border-radius: 50%;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+  }
+  
+  .edit-button:hover {
+    background: var(--primary-light);
+    color: var(--white);
+  }  
+  
+  .edit-button svg {
+    width: 18px;
+    height: 18px;
+  }
+  
+  /* Info display styles */
+  .info-display {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  
+  .info-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+  
+  .info-group {
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  .info-label {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--light-text);
+    margin-bottom: 0.25rem;
+  }
+  
+  .info-value {
+    font-size: 1rem;
+    color: var(--text-color);
+    font-weight: 500;
+  }
+  
+  /* Edit form styles */
+  .edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  
+  .form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .form-group {
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  .form-group.full-width {
+    flex-basis: 100%;
+  }
+  
+  .form-group label {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+  
+  .input-icon-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .input-icon {
+    position: absolute;
+    left: 12px;
+    color: var(--primary-color);
+    width: 18px;
+    height: 18px;
+    opacity: 0.7;
+  }
+  
+  .input-icon-wrapper input,
+  .input-icon-wrapper select {
+    width: 100%;
+    padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+  
+  .input-icon-wrapper input:focus,
+  .input-icon-wrapper select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+  }
+  
+  select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+  }
+  
+  select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+  }
+  
+  /* Update the radio button styles to have purple circles */
+  .radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .radio-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+  
+  .radio-label:hover {
+    background-color: var(--secondary-color);
+  }
+  
+  /* Hide the default radio button */
+  .radio-label input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    margin: 0;
+  }
+  
+  /* Create a custom radio button */
+  .radio-label input[type="radio"] + span {
+    position: relative;
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    border-radius: 50%;
+    border: 2px solid #d1d5db;
+    background-color: white;
+    transition: all 0.2s ease;
+  }
+  
+  /* Style the radio button when checked */
+  .radio-label input[type="radio"]:checked + span {
+    border-color: var(--primary-color);
+  }
+  
+  /* Create the inner circle for checked state */
+  .radio-label input[type="radio"]:checked + span:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+  }
+  
+  /* Style the radio button when focused */
+  .radio-label input[type="radio"]:focus + span {
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+  }
+  
+  /* Style for active radio button label */
+  .radio-label.active {
+    background-color: rgba(124, 58, 237, 0.1);
+    border-color: var(--primary-color);
+  }
+  
+  /* Checkbox styles */
+  .checkbox-group {
+    margin-top: 0.5rem;
+  }
+  
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    position: relative;
+  }
+  
+  /* Hide the default checkbox */
+  .checkbox-label input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    margin: 0;
+  }
+  
+  /* Create a custom checkbox */
+  .checkbox-label input[type="checkbox"] + span {
+    position: relative;
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    border-radius: 4px;
+    border: 2px solid #d1d5db;
+    background-color: white;
+    transition: all 0.2s ease;
+  }
+  
+  /* Style the checkbox when checked */
+  .checkbox-label input[type="checkbox"]:checked + span {
+    border-color: var(--primary-color);
+    background-color: var(--primary-color);
+  }
+  
+  /* Create the checkmark for checked state */
+  .checkbox-label input[type="checkbox"]:checked + span:after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 6px;
+    width: 4px;
+    height: 9px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  
+  /* Style the checkbox when focused */
+  .checkbox-label input[type="checkbox"]:focus + span {
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+  }
+  
+  /* Form actions */
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .cancel-button {
+    padding: 0.75rem 1.5rem;
+    background-color: var(--white);
+    color: var(--light-text);
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .cancel-button:hover {
+    background-color: var(--secondary-color);
+  }
+  
+  .save-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .save-button:hover {
+    background-color: var(--primary-dark);
+  }
+  
+  .save-button svg {
+    width: 18px;
+    height: 18px;
+  }
+  
+  /* Skills section */
+  .skills-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .skills-input {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .skills-input .input-icon-wrapper {
+    flex: 1;
+  }
+  
+  .add-skill-button {
+    padding: 0.75rem 1.25rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .add-skill-button:hover {
+    background-color: var(--primary-dark);
+  }
+  
+  .skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+  
+  .skill-tag {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background-color: var(--secondary-color);
+    border-radius: 2rem;
+    font-size: 0.9rem;
+    color: var(--text-color);
+  }
+  
+  .remove-skill-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    color: var(--light-text);
+    transition: all 0.2s ease;
+  }
+  
+  .remove-skill-button:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: var(--error-color);
+  }
+  
+  .remove-skill-button svg {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .no-skills-message {
+    color: var(--light-text);
+    font-style: italic;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .dashboard-header {
+      padding: 1rem;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .logo-section {
+      margin-bottom: 1rem;
+      width: 100%;
+      justify-content: space-between;
+    }
+  
+    .main-nav {
+      width: 100%;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+    }
+  
+    .user-section {
+      width: 100%;
+      justify-content: flex-end;
+      margin-top: 1rem;
+    }
+  
+    .profile-header {
+      flex-direction: column;
+      text-align: center;
+      gap: 1rem;
+    }
+  
+    .profile-content {
+      padding: 1rem;
+    }
+  
+    .form-actions {
+      flex-direction: column;
+    }
+  
+    .form-actions button {
+      width: 100%;
+    }
+  
+    .info-row {
+      flex-direction: column;
+      gap: 1rem;
+    }
+  }
+  

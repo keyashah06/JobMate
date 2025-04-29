@@ -172,3 +172,9 @@ __pycache__/
 *.pyc
 /jobmate_backend/auth_app/__pycache__
 /jobmate_backend/resumes/migrations/__pycache__
+.backend_pid
+.frontend_pid
+.frontend_port
+
+*.dump
+jobmate-extension/node_modules

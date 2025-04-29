@@ -79,14 +79,18 @@ const Dashboard = ({ userName, onNavigate }) => {
           <button className="settings-button">
             <FiSettings />
           </button>
-          <div className="user-avatar">
-            <div className="initials">
-              {userName
-                .split(" ")
-                .map((n) => n[0])
-                .join("")}
+          <div 
+          className="user-avatar"
+          onClick={() => handleNavigate("profile")}
+          style={{ cursor: 'pointer' }}
+        >
+          <div className="initials">
+            {userName
+            .split(" ")
+            .map((n) => n[0])
+            .join("")}
             </div>
-          </div>
+            </div>
         </div>
       </header>
 
@@ -193,6 +197,7 @@ const Dashboard = ({ userName, onNavigate }) => {
               </div>
               <button className="edit-button">Add</button>
             </div>
+            
           </div>
         </div>
       </main>

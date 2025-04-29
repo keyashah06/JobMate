@@ -846,7 +846,7 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
                     <FiClock />
                     <span>
                       Posted:{" "}
-                      {selectedJob.agoTime || formatTimeAgo(selectedJob.date)}
+                      {selectedJob.agoTime || formatTime1Ago(selectedJob.date)}
                     </span>
                   </div>
                 )}
@@ -886,7 +886,7 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
                     <p>{selectedJob.description}</p>
                   ) : (
                     <p className="no-description">
-                      No detailed description available. Please click "Apply on
+                      Please click "Apply on
                       LinkedIn" to view the full job details.
                     </p>
                   )}
