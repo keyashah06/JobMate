@@ -1,0 +1,471 @@
+/* Dashboard Styles */
+.dashboard-page {
+  min-height: 100vh;
+  background-color: #f9fafb;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: var(--text-color);
+}
+
+.dashboard-header {
+  background-color: var(--white);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+}
+
+.app-logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-right: 2rem;
+}
+
+.main-nav {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: var(--light-text);
+  font-weight: 500;
+  transition: color 0.3s ease;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.nav-link:hover {
+  color: var(--primary-color);
+  background-color: rgba(124, 58, 237, 0.05);
+}
+
+.nav-link.active {
+  color: var(--primary-color);
+  position: relative;
+}
+
+.nav-link.active::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--primary-color);
+}
+
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.notification-button,
+.settings-button {
+  background: none;
+  border: none;
+  color: var(--light-text);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notification-button:hover,
+.settings-button:hover {
+  background-color: #f3f4f6;
+  color: var(--text-color);
+}
+
+.notification-button svg,
+.settings-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.user-avatar .initials {
+  font-size: 0.875rem;
+}
+
+.dashboard-content {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.welcome-card {
+  background-color: var(--white);
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.user-avatar.large {
+  width: 64px;
+  height: 64px;
+  font-size: 1.25rem;
+}
+
+.welcome-text h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.welcome-text p {
+  color: var(--light-text);
+}
+
+.status-toggle {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.status-toggle.active {
+  background-color: var(--primary-color);
+  color: var(--white);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.status-toggle.active:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.status-toggle.inactive {
+  background-color: #f3f4f6;
+  color: var(--text-color);
+  border: 1px solid #e5e7eb;
+}
+
+.status-toggle.inactive:hover {
+  background-color: #e5e7eb;
+}
+
+.action-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* Action Card Layout */
+.action-card {
+  background-color: var(--white);
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.action-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.action-card p {
+  color: var(--light-text);
+  margin-bottom: 1.5rem;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Improved Button Styles */
+.action-button {
+  display: inline-block;
+  width: auto;
+  min-width: 180px;
+  max-width: 90%;
+  background-color: rgba(124, 58, 237, 0.9);
+  color: var(--white);
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  text-align: center;
+  margin-top: auto;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  box-shadow: 0 1px 2px rgba(124, 58, 237, 0.2);
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.action-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #f5f3ff;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+
+.action-icon svg {
+  width: 24px;
+  height: 24px;
+  stroke: var(--primary-color);
+}
+
+.action-card h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.action-card p {
+  color: var(--light-text);
+  margin-bottom: 1.5rem;
+}
+
+.action-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: var(--primary-color);
+  color: var(--white);
+  border: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  display: inline-block;
+  width: auto;
+  min-width: 140px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.5;
+}
+
+.action-button:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.profile-section {
+  background-color: var(--white);
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+}
+
+.profile-section h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.profile-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.profile-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+  transition: background-color 0.3s ease;
+}
+
+.profile-item:hover {
+  background-color: #f9fafb;
+}
+
+.profile-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #f5f3ff;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+}
+
+.profile-icon svg {
+  width: 16px;
+  height: 16px;
+  stroke: var(--primary-color);
+}
+
+.profile-item-content {
+  flex: 1;
+}
+
+.profile-item-content span {
+  font-weight: 500;
+}
+
+.edit-button {
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: #f3f4f6;
+  color: var(--text-color);
+  border: 1px solid #e5e7eb;
+}
+
+.edit-button:hover {
+  background-color: #e5e7eb;
+}
+
+/* Specific fixes for action card buttons */
+.action-card .action-button {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-top: auto;
+}
+
+/* Alternative Button Styles - More Subtle and Professional */
+.action-button.subtle {
+  background-color: white;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.action-button.subtle:hover {
+  background-color: #f9f5ff;
+  color: var(--primary-dark);
+  border-color: var(--primary-dark);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Button spacing and alignment fixes */
+.action-button:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(124, 58, 237, 0.3);
+}
+
+/* This ensures text is properly centered */
+.action-button span {
+  display: inline-block;
+  text-align: center;
+  width: 100%;
+  vertical-align: middle;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .dashboard-header {
+    padding: 1rem;
+  }
+  
+  .logo-section {
+    width: 100%;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+  
+  .main-nav {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .user-section {
+    width: 100%;
+    justify-content: flex-end;
+    margin-top: 1rem;
+  }
+  
+  .welcome-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+  
+  .status-toggle {
+    width: 100%;
+  }
+  
+  .action-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .main-nav {
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    width: 100%;
+  }
+  
+  .nav-link {
+    white-space: nowrap;
+  }
+  
+  .user-info {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .welcome-text {
+    text-align: center;
+  }
+}
