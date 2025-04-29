@@ -6,7 +6,9 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("jobmate_token");
+    console.log("🔍 Checking token at Dashboard:", token);
+
     if (!token) {
       navigate("/");
     } else {
@@ -15,8 +17,10 @@ const Dashboard = () => {
   }, [navigate]);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem("jobmate_token");
     localStorage.removeItem("email");
+    localStorage.clear(); // Clear all local storage
+    console.log("🔒 User logged out. localStorage cleared.");
     navigate("/");
   };
 

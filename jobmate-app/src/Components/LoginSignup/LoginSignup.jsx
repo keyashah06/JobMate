@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { TbUser, TbMail, TbLock } from "react-icons/tb";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
@@ -6,6 +6,13 @@ import './Auth.css';
 import './LoginSignup.css'; // Import the CSS file for styling
 
 const LoginSignup = () => {
+  // State variables for login/signup
+  // Added localStorage.clear() to clear any previous session data on page load
+  useEffect(() => {
+    localStorage.clear();
+    console.log("🔒 Cleared localStorage on page load");
+  }, []);
+
   const [action, setAction] = useState("Login");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -23,6 +30,9 @@ const LoginSignup = () => {
   const handleLogin = async () => {
     setError("");
     setMessage("");
+    
+    console.log("Login Attempt:", { email, password }); // LOG INPUTS IN CONSOLE
+
     try {
       const response = await fetch("http://127.0.0.1:8000/auth/login/", {
         method: "POST",
@@ -39,9 +49,9 @@ const LoginSignup = () => {
         navigate("/verify-mfa");
       } else if (response.ok && data.token) {
         localStorage.setItem("jobmate_token", data.token);  // ✅ Store token!
-        localStorage.setItem("email", email);
         navigate("/dashboard");  // or wherever you want to redirect
       } else {
+        console.log("❌ Login Failed Data:", data);
         setError(data.message || "LOGIN FAILED");
       }      
     } catch (err) {
@@ -153,16 +163,20 @@ const LoginSignup = () => {
       <div className="submit-container">
         <div
           className="submit"
-          onClick={() => (action === "Login" ? setAction("Sign Up") : handleSignup())}
+          onClick={() => setAction("Sign Up")}
         >
-          Sign Up
+          Switch to Sign Up
+        </div>
+
+        <div className="submit" onClick={() => setAction("Login")}>
+          Switch to Login
         </div>
 
         <div
           className="submit"
-          onClick={() => (action === "Sign Up" ? setAction("Login") : handleLogin())}
+          onClick={() => (action === "Login" ? handleLogin() : handleSignup())}
         >
-          Login
+          {action === "Login" ? "Login" : "Sign Up Now"}
         </div>
       </div>
     </div>

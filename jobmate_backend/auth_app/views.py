@@ -6,6 +6,7 @@ from django.conf import settings
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.authtoken.models import Token
 from .models import MFACode
 import secrets
 from django.http import JsonResponse
@@ -61,40 +62,43 @@ def send_mfa_email(user):
         print(f"ERROR sending MFA email: {e}")
 
 # MFA code verification view
-@csrf_exempt  # Disables CSRF protection for API requests (needed for Postman testing)
+from rest_framework.authtoken.models import Token  # Import for token
+
+@csrf_exempt
 @api_view(['POST'])
 def verify_mfa_code(request):
-    """Verifies MFA code and logs in the user if valid."""
-    email_or_username = request.data.get("email")  # Accept email or username
+    """Verifies MFA code and logs in the user if valid, returns auth token."""
+    email_or_username = request.data.get("email")
     code = request.data.get("code")
 
     if not all([email_or_username, code]):
         return JsonResponse({"message": "Email/Username and code are required."}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        # Check if input is an email or username
         user = User.objects.filter(email=email_or_username).first() or User.objects.filter(username=email_or_username).first()
 
         if not user:
             return JsonResponse({"message": "Invalid user."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Retrieve the most recent MFA code for the user
         mfa_code = MFACode.objects.filter(user=user, code=code).first()
 
         if not mfa_code:
             return JsonResponse({"message": "Invalid MFA code."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Check if MFA code is expired
         if mfa_code.created_at + timedelta(minutes=5) < timezone.now():
             return JsonResponse({"message": "MFA code expired."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Log in the user
+        # MFA success - generate token
         login(request, user)
-
-        # Invalidate the MFA code after use
         mfa_code.delete()
 
-        return JsonResponse({"message": "MFA verified. Logged in successfully."}, status=status.HTTP_200_OK)
+        token, _ = Token.objects.get_or_create(user=user)
+        print(f"✅ Token Generated for {user.username}: {token.key}")
+
+        return JsonResponse({
+            "message": "MFA verified. Logged in successfully.",
+            "token": token.key
+        }, status=status.HTTP_200_OK)
 
     except Exception as e:
         print(f"❌ ERROR during MFA verification: {e}")
@@ -122,13 +126,20 @@ def register_view(request):
 
     return Response({"message": f"User '{username}' registered. MFA code sent."}, status=status.HTTP_201_CREATED)
 
+@csrf_exempt  # add this above @api_view
 # Login view with MFA email sending
 @api_view(['POST'])
 def login_view(request):
     """Handles login and sends MFA code if credentials are valid."""
     try:
-        email_or_username = request.data.get("email")  # Keep field name for frontend compatibility
+
+        email_or_username = request.data.get("email") or request.data.get("username")
+        print(f"📥 Raw request data: {request.data}")
+        print(f"📥 Email/Username: {email_or_username}")
+        print(f"📥 Password: {request.data.get('password')}")
         password = request.data.get("password")
+
+        print(f"🔐 Login attempt for: {email_or_username}")
 
         if not all([email_or_username, password]):
             return Response({"message": "Email/Username and password are required."}, status=status.HTTP_400_BAD_REQUEST)

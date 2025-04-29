@@ -26,7 +26,6 @@ INSTALLED_APPS = [
     # Third-party
     "rest_framework",
     "rest_framework.authtoken",
-    "jobmate_backend",
     "corsheaders",
     "resumes",
     

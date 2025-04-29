@@ -31,12 +31,20 @@ const VerifyMFA = () => {
 
       const data = await response.json();
       console.log("🔹 MFA Response:", data);
+      console.log("✅ Token Received:", data.token);
+      console.log("✅ jobmate_token now in localStorage:", localStorage.getItem("jobmate_token"));
+
 
       if (response.ok) {
+        console.log("MFA Verified! Redirecting...");
         setMessage("✅ MFA verified. Redirecting to dashboard...");
-        localStorage.setItem("token", data.token); // Store token
+        console.log("Token Received:", data.token);
+        localStorage.setItem("jobmate_token", data.token); // Store token
+        console.log("localStorage now:", localStorage);
+        // Redirect to dashboard after successful MFA verification
         setTimeout(() => navigate("/dashboard"), 2000); // Redirect after 2s delay
       } else {
+        console.log("MFA Verification Error Data:", data);
         setError(data.message || "❌ MFA verification failed.");
       }
     } catch (err) {
