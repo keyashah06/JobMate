@@ -305,3 +305,33 @@ def match_job(request):
    print(result)
    print("step 4")
    return Response(result, status=200 if  result else 404)
+
+
+@api_view(['POST'])
+def save_employment_info(request):
+   #print(request.data)
+   user = request.user
+   try:
+      resume = Resume.objects.get(user=user)
+   except Resume.DoesNotExist:
+      resume = Resume(user=user)
+
+   serializer = ResumeSerializer(resume, data=request.data)
+   if serializer.is_valid():
+      serializer.save()
+      return Response(serializer.data, status = status.HTTP_200_OK)
+   else:
+      print(serializer.errors)
+      return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def get_employment_info(request):
+   user = request.user
+   try:
+      resume = Resume.objects.get(user=user)
+      serializer = ResumeSerializer(resume)
+      return Response(serializer.data, status = status.HTTP_200_OK)
+   except Resume.DoesNotExist:
+      return Response({"detail": "No employment information found."}, status = status.HTTP_404_NOT_FOUND)
+
+

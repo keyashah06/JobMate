@@ -47,6 +47,9 @@ const App = () => {
       });
     })};
 
+  
+  
+  
 
   const handleButtonClick = async () => {
     setLoading(true);
@@ -79,8 +82,8 @@ const App = () => {
       print(response);
       const data = await response.json();
       if (response.ok) {
-        //setMatchScore(data.match_score);
-        alert(`Match score: ${data.match_percentage.toFixed(2)}%`);
+        setMatchScore(data.match_percentage);
+        //alert(`Match score: ${data.match_percentage.toFixed(2)}%`);
       } else {
         alert("Error: " + data.message);
       }
@@ -128,12 +131,36 @@ const App = () => {
           textAlign: 'center',
         }}
       >
-        Begin Matching
+        {loading ? "Loading..." : "Begin Matching"}
       </button>
       <p style = {{color: '#4c00b4', justifyContent: 'center', alignItems: 'center', fontSize: '15px', cursor: 'pointer', fontWeight: '200'}} className='submit'>
       <a href="http://localhost:3000/" target="_blank">Login or Signup</a>
       </p>
+
+      {matchScore !== null && (
+        <div style = {{
+          marginTop: '20px',
+          padding: '15px',
+          backgroundColor: '#f0f4ff',
+          borderRadius: '12px',
+          boxShadow: '0px 0px 8px rgba(60,0,157,0.1)',
+          color: '#333',
+          fontSize: '16px',
+          fontWeight: '500',
+          textAlign: 'center'
+        }}>
+        Your Match Score is:
+        <span style = {{ fontSize: '22px', color: '#4c00b4', fontWeight: '700', marginLeft: '6px'}}>
+          {matchScore.toFixed(2)}%
+        </span>
+
+        </div>
+      )}
+
+      
+
     </main>
+    
 
   );
 };

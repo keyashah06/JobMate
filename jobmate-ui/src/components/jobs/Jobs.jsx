@@ -110,6 +110,7 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
       if (!token) {
         throw new Error("Authentication required");
       }
+    
 
       // Call the backend API
       const response = await fetch("http://127.0.0.1:8000/api/linkedin/jobs/", {
@@ -120,6 +121,7 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
         },
         body: JSON.stringify(queryParams),
       });
+      console.log('byeee')
 
       if (!response.ok) {
         throw new Error(`Error fetching jobs: ${response.status}`);

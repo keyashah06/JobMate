@@ -25,9 +25,9 @@ const Profile = ({ onNavigate, userName = "User" }) => {
     phone: "",
     location: "",
     birthday: "",
-  })
+  });
 
-  // State for employment info
+  // employment info
   const [employmentInfo, setEmploymentInfo] = useState({
     ethnicity: "",
     workAuthUS: false,
@@ -38,39 +38,47 @@ const Profile = ({ onNavigate, userName = "User" }) => {
     lgbtq: false,
     gender: "",
     veteran: false,
-  })
+  });
 
-  // Remove the Education section and its related state/functions
-  // 1. Remove the educationInfo state
-  // const [educationInfo, setEducationInfo] = useState({
-  //   institution: "",
-  //   degree: "",
-  //   fieldOfStudy: "",
-  //   graduationDate: "",
-  // });
-
-  // 2. Remove the editingEducation state
-  // const [editingEducation, setEditingEducation] = useState(false);
+  
 
   // Edit states
-  const [editingPersonal, setEditingPersonal] = useState(false)
-  const [editingEmployment, setEditingEmployment] = useState(false)
+  const [editingPersonal, setEditingPersonal] = useState(false);
+  const [editingEmployment, setEditingEmployment] = useState(false);
   // const [editingEducation, setEditingEducation] = useState(false);
 
   // State for skills
-  const [skills, setSkills] = useState([])
-  const [newSkill, setNewSkill] = useState("")
+  const [skills, setSkills] = useState([]);
+  const [newSkill, setNewSkill] = useState("");
 
   // Load user data on component mount
   useEffect(() => {
-    // In a real app, you would fetch this from your backend
-    // For now, we'll use mock data
-    const loadUserData = () => {
+    const loadUserData = async () => {
       // Check if we have data in localStorage
-      const storedPersonalInfo = localStorage.getItem("jobmate_personal_info")
-      const storedEmploymentInfo = localStorage.getItem("jobmate_employment_info")
-      // const storedEducationInfo = localStorage.getItem("jobmate_education_info")
-      const storedSkills = localStorage.getItem("jobmate_skills")
+      const storedPersonalInfo = localStorage.getItem("jobmate_personal_info");
+      const storedSkills = localStorage.getItem("jobmate_skills");
+
+      try {
+        const response = await fetch('http://localhost:8000/resumes/get_employment_info/', {
+            method: 'GET',
+            headers: {
+              'Authorization': `Token ${localStorage.getItem("jobmate_token")}`,
+              'Content-Type': 'application/json',
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setEmploymentInfo(data)
+      } else {
+        console.log("No employment info found");
+      } 
+    } catch (error) {
+      console.error("Error fetching employment info:", error);
+    }
+  
+
+
+
 
       // Parse and set data if available
       if (storedPersonalInfo) {
@@ -87,64 +95,74 @@ const Profile = ({ onNavigate, userName = "User" }) => {
         })
       }
 
+      /*
       if (storedEmploymentInfo) {
         setEmploymentInfo(JSON.parse(storedEmploymentInfo))
       }
+      */
 
-      // 5. Remove the education info loading from useEffect
-      // if (storedEducationInfo) {
-      //   setEducationInfo(JSON.parse(storedEducationInfo));
-      // }
 
       if (storedSkills) {
         setSkills(JSON.parse(storedSkills))
       }
-    }
+    };
 
     loadUserData()
-  }, [userName])
+  }, [userName]);
 
   // Save data to localStorage
   const savePersonalInfo = () => {
     localStorage.setItem("jobmate_personal_info", JSON.stringify(personalInfo))
     setEditingPersonal(false)
+  };
+
+  const saveEmploymentInfo = async () => {
+    
+    try {
+      console.log("SENDING EMPLOYMENT INFO:", employmentInfo);
+      const response = await fetch('http://localhost:8000/resumes/save_employment_info/', {
+        method: "POST",
+        headers: {
+          "Authorization": `Token ${localStorage.getItem("jobmate_token")}`,
+          "Content-Type": "application/json",
+        },
+        
+        body: JSON.stringify(employmentInfo)
+    });
+    if (response.ok) {
+      const data = await response.json();
+      console.log("Employment info saved:", data);
+      setEditingEmployment(false)
+    }
+  } catch (error) {
+    console.error("Error saving employment info:", error);
   }
+   
+  };
 
-  const saveEmploymentInfo = () => {
-    localStorage.setItem("jobmate_employment_info", JSON.stringify(employmentInfo))
-    setEditingEmployment(false)
-  }
 
-  // 3. Remove the saveEducationInfo function
-  // const saveEducationInfo = () => {
-  //   localStorage.setItem("jobmate_education_info", JSON.stringify(educationInfo));
-  //   setEditingEducation(false);
-  // };
-
+  
   const saveSkills = () => {
     localStorage.setItem("jobmate_skills", JSON.stringify(skills))
-  }
+  };
+    
 
   // Handle input changes
   const handlePersonalChange = (e) => {
     const { name, value } = e.target
     setPersonalInfo((prev) => ({ ...prev, [name]: value }))
-  }
+  };
 
   const handleEmploymentChange = (e) => {
     const { name, value, type, checked } = e.target
     setEmploymentInfo((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
-    }))
-  }
+    }));
+  };
 
-  // 4. Remove the handleEducationChange function
-  // const handleEducationChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setEducationInfo((prev) => ({ ...prev, [name]: value }));
-  // };
 
+  
   // Handle adding skills
   const handleAddSkill = () => {
     if (newSkill.trim() && !skills.includes(newSkill.trim())) {
@@ -153,13 +171,14 @@ const Profile = ({ onNavigate, userName = "User" }) => {
       setNewSkill("")
       localStorage.setItem("jobmate_skills", JSON.stringify(updatedSkills))
     }
-  }
+  };
 
   const handleRemoveSkill = (skillToRemove) => {
     const updatedSkills = skills.filter((skill) => skill !== skillToRemove)
     setSkills(updatedSkills)
     localStorage.setItem("jobmate_skills", JSON.stringify(updatedSkills))
-  }
+  };
+  
 
   // Get user initials for avatar
   const getUserInitials = () => {
@@ -172,7 +191,7 @@ const Profile = ({ onNavigate, userName = "User" }) => {
         .join("")
     }
     return "U"
-  }
+  };
 
   return (
     <div className="profile-page">
@@ -709,128 +728,7 @@ const Profile = ({ onNavigate, userName = "User" }) => {
             )}
           </div>
 
-          {/* 6. Remove the entire Education Section JSX block */}
-          {/* Education Section */}
-          {/* <div className="profile-section">
-            <div className="section-header">
-              <h2>Education</h2>
-              <button
-                className="edit-button"
-                onClick={() => setEditingEducation(!editingEducation)}
-              >
-                {editingEducation ? <FiX /> : <FiEdit2 />}
-              </button>
-            </div>
-
-            {editingEducation ? (
-              <div className="edit-form">
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="institution">Educational Institution</label>
-                    <div className="input-icon-wrapper">
-                      <FiUsers className="input-icon" />
-                      <input
-                        type="text"
-                        id="institution"
-                        name="institution"
-                        value={educationInfo.institution}
-                        onChange={handleEducationChange}
-                        placeholder="University or College Name"
-                      />
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="degree">Degree</label>
-                    <div className="input-icon-wrapper">
-                      <FiBriefcase className="input-icon" />
-                      <input
-                        type="text"
-                        id="degree"
-                        name="degree"
-                        value={educationInfo.degree}
-                        onChange={handleEducationChange}
-                        placeholder="Bachelor's, Master's, etc."
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="fieldOfStudy">Field of Study</label>
-                    <div className="input-icon-wrapper">
-                      <FiGlobe className="input-icon" />
-                      <input
-                        type="text"
-                        id="fieldOfStudy"
-                        name="fieldOfStudy"
-                        value={educationInfo.fieldOfStudy}
-                        onChange={handleEducationChange}
-                        placeholder="Computer Science, Business, etc."
-                      />
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="graduationDate">Graduation Date</label>
-                    <div className="input-icon-wrapper">
-                      <FiCalendar className="input-icon" />
-                      <input
-                        type="date"
-                        id="graduationDate"
-                        name="graduationDate"
-                        value={educationInfo.graduationDate}
-                        onChange={handleEducationChange}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="form-actions">
-                  <button
-                    className="cancel-button"
-                    onClick={() => setEditingEducation(false)}
-                  >
-                    Cancel
-                  </button>
-                  <button className="save-button" onClick={saveEducationInfo}>
-                    <FiSave /> Save Changes
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="info-display">
-                <div className="info-row">
-                  <div className="info-group">
-                    <span className="info-label">Educational Institution</span>
-                    <span className="info-value">
-                      {educationInfo.institution || "Not specified"}
-                    </span>
-                  </div>
-                  <div className="info-group">
-                    <span className="info-label">Degree</span>
-                    <span className="info-value">
-                      {educationInfo.degree || "Not specified"}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="info-row">
-                  <div className="info-group">
-                    <span className="info-label">Field of Study</span>
-                    <span className="info-value">
-                      {educationInfo.fieldOfStudy || "Not specified"}
-                    </span>
-                  </div>
-                  <div className="info-group">
-                    <span className="info-label">Graduation Date</span>
-                    <span className="info-value">
-                      {educationInfo.graduationDate || "Not specified"}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div> */}
+          
 
           {/* Skills Section */}
           <div className="profile-section">

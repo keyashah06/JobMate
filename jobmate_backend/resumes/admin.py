@@ -8,7 +8,9 @@ from .models import Resume
 class ResumeAdmin(admin.ModelAdmin):
     list_display = (
         'user', 'name', 'email', 'phone', 'education', 'experience', 'skills', 
-        'projects', 'resume_file', 'uploaded_at'
+        'projects', 'resume_file', 'uploaded_at', 'ethnicity', 'workAuthUS', 'workAuthCanada',
+        'workAuthUK', 'requireSponsorship', 'disability', 'lgbtq', 
+              'gender', 'veteran'
     )  # Displaying all fields
 
 admin.site.register(Resume, ResumeAdmin)

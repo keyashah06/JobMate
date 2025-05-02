@@ -31,11 +31,12 @@ const LoginForm = ({
         username: email, // Make sure we're using email as username
         password: password,
       });
+      
 
       if (response.data && response.data.token) {
         // Store token in localStorage for future authenticated requests
         localStorage.setItem("jobmate_token", response.data.token);
-
+        console.log("token:", response.data.token);
         if (onLoginSuccess) {
           onLoginSuccess(email, password);
         }
