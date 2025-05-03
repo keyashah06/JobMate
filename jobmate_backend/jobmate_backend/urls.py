@@ -29,8 +29,7 @@ urlpatterns = [
     path("resumes/match_job/", match_job, name = "match_job"),
     path("resumes/get_details/", get_resume_details, name = "get_resume_details"),
     path("api/linkedin/jobs/", linkedin_jobs, name="linkedin_jobs"),
-    path("api/linkedin/jobs/<int:job_id>/", linkedin_job_details, name="linkedin_job_details"),
-    
+    path("api/linkedin/jobs/<int:job_id>/", linkedin_job_details, name="linkedin_job_details"), 
 ]
     
 

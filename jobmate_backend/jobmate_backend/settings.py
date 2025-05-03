@@ -106,7 +106,7 @@ else:
             "ENGINE": "django.db.backends.postgresql",
             "NAME": "jobmate_db",
             "USER": "postgres",
-            "PASSWORD": "potato",
+            "PASSWORD": "Lord/4337U",
             "HOST": "localhost",
             "PORT": "5432",
         }

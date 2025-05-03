@@ -19,8 +19,9 @@
 
 .input-icon-wrapper {
   position: relative;
-  display: flex;
+  display: block;
   align-items: center;
+  padding-bottom: 20px;
 }
 
 .input-icon {
