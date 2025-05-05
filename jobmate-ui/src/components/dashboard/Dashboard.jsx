@@ -12,9 +12,10 @@ import {
   FiUser,
   FiFile,
   FiBriefcase,
+  FiLogOut,
 } from "react-icons/fi";
 
-const Dashboard = ({ userName, onNavigate }) => {
+const Dashboard = ({ userName, onNavigate, onLogout }) => {
   const [isActivelyLooking, setIsActivelyLooking] = useState(true);
   const [currentView, setCurrentView] = useState("dashboard");
 
@@ -72,12 +73,16 @@ const Dashboard = ({ userName, onNavigate }) => {
             </a>
           </nav>
         </div>
+
         <div className="user-section">
           <button className="notification-button">
             <FiBell />
           </button>
           <button className="settings-button">
             <FiSettings />
+          </button>
+          <button className="logout-button" onClick={onLogout}>
+            <FiLogOut /> Logout
           </button>
           <div className="user-avatar">
             <div className="initials">

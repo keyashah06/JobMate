@@ -36,15 +36,11 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [debugMode, setDebugMode] = useState(false); // For debugging
+  const [debugMode, setDebugMode] = useState(false);
 
-  // Job detail modal state
   const [selectedJob, setSelectedJob] = useState(null);
-
-  // Show/hide advanced filters
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
 
-  // Token for auth
   const getToken = () => localStorage.getItem("jobmate_token");
 
   const jobTypes = [
@@ -66,33 +62,24 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
   ];
 
   const remoteOptions = ["On-site", "Remote", "Hybrid"];
-
   const datePostedOptions = ["Past 24 hours", "Past Week", "Past Month"];
 
-  // Search for jobs when filters change
   useEffect(() => {
-    // Initial job search on component mount
     fetchJobs();
   }, []);
 
-  // Helper function to extract job ID from LinkedIn URL
   const extractJobId = (jobUrl) => {
     if (!jobUrl) return null;
-
-    // LinkedIn job URLs typically end with the job ID
-    // Example: https://www.linkedin.com/jobs/view/paralegal-at-f45-training-ashrafieh-4204120785/
     const matches = jobUrl.match(/\/(\d+)\/?$/);
     if (matches && matches[1]) {
       return matches[1];
     }
     return null;
   };
-
   const fetchJobs = async () => {
     setLoading(true);
     setError(null);
 
-    // Prepare query params
     const queryParams = {
       keyword: searchTerm,
       location: location,
@@ -100,25 +87,25 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
       experienceLevel: experienceLevel,
       remoteFilter: remoteFilter,
       dateSincePosted: dateSincePosted,
-      limit: "20", // Limit results
+      limit: "20",
       sortBy: sortBy === "recent" ? "recent" : "relevant",
     };
 
     try {
-      // Get the auth token
       const token = getToken();
       if (!token) {
         throw new Error("Authentication required");
       }
 
-      // Call the backend API
       const response = await fetch("http://127.0.0.1:8000/api/linkedin/jobs/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Token ${token}`,
         },
-        body: JSON.stringify(queryParams),
+        body: JSON.stringify({
+          jobs: jobs,
+        }),
       });
 
       if (!response.ok) {
@@ -127,45 +114,47 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
 
       const data = await response.json();
 
-      // Debug: Log the raw data from the API
       if (debugMode) {
         console.log("Raw job data from API:", data);
       }
 
-      // Enhance job data with filter information and extract job IDs
       const enhancedData = data.map((job) => {
         const enhancedJob = { ...job };
 
-        // Extract job ID from URL if not already present
+        // Extract job ID
         if (!enhancedJob.jobId && enhancedJob.jobUrl) {
           enhancedJob.jobId = extractJobId(enhancedJob.jobUrl);
         }
 
-        // Add job type from filter if not present in job data
+        // Add job type from filter
         if (!enhancedJob.type && jobType) {
           enhancedJob.type = jobType;
         }
 
-        // Add experience level from filter if not present in job data
+        // Add experience level from filter
         if (!enhancedJob.experienceLevel && experienceLevel) {
           enhancedJob.experienceLevel = experienceLevel;
         }
 
-        // Add remote filter if not present in job data
+        // Add remote filter if not present
         if (!enhancedJob.remoteFilter && remoteFilter) {
           enhancedJob.remoteFilter = remoteFilter;
         }
 
-        // Always ensure these fields exist (even if empty)
+        // Always ensure these fields exist
         enhancedJob.type = enhancedJob.type || "";
         enhancedJob.experienceLevel = enhancedJob.experienceLevel || "";
         enhancedJob.remoteFilter = enhancedJob.remoteFilter || "";
         enhancedJob.salary = enhancedJob.salary || "";
 
+        // ✅ PHISHING DETECTION FIELDS
+        // Make sure your Django backend includes these:
+        enhancedJob.is_scam = job.is_scam || false;
+        enhancedJob.confidence = job.confidence || 0;
+
         return enhancedJob;
       });
 
-      // Debug: Log the enhanced data
       if (debugMode) {
         console.log("Enhanced job data:", enhancedData);
       }
@@ -174,12 +163,10 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
     } catch (err) {
       console.error("Failed to fetch jobs:", err);
       setError(err.message || "Failed to load jobs");
-      // If API fails, we could provide fallback with mock data
     } finally {
       setLoading(false);
     }
   };
-
   const handleSearch = (e) => {
     e.preventDefault();
     fetchJobs();
@@ -196,10 +183,8 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
   };
 
   const handleViewJobDetails = async (job) => {
-    // Set the selected job immediately for better UX
     setSelectedJob(job);
 
-    // If we have a job ID, fetch more detailed information
     if (job.jobId) {
       try {
         const token = getToken();
@@ -219,27 +204,26 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
         if (response.ok) {
           const detailedJob = await response.json();
 
-          // Debug: Log the detailed job data
           if (debugMode) {
             console.log("Detailed job data:", detailedJob);
           }
 
-          // Update the selected job with more detailed information
           setSelectedJob((prev) => {
             const updatedJob = {
               ...prev,
               ...detailedJob,
-              // Preserve the original job URL if the detailed one doesn't have it
               jobUrl: detailedJob.jobUrl || prev.jobUrl,
-              // Ensure these fields exist (even if empty)
               type: detailedJob.type || prev.type || "",
               experienceLevel:
                 detailedJob.experienceLevel || prev.experienceLevel || "",
               remoteFilter: detailedJob.remoteFilter || prev.remoteFilter || "",
               salary: detailedJob.salary || prev.salary || "",
+
+              // ✅ PHISHING DETECTION IN DETAILS
+              is_scam: detailedJob.is_scam || prev.is_scam || false,
+              confidence: detailedJob.confidence || prev.confidence || 0,
             };
 
-            // Debug: Log the updated job
             if (debugMode) {
               console.log("Updated selected job:", updatedJob);
             }
@@ -249,7 +233,6 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
         }
       } catch (error) {
         console.error("Failed to fetch detailed job information:", error);
-        // Keep using the basic job info we already have
       }
     }
   };
@@ -257,14 +240,10 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
   const handleCloseJobDetails = () => {
     setSelectedJob(null);
   };
-
   const handleApplyToJob = (job) => {
-    // Use job URL directly if available
     if (job.jobUrl) {
       window.open(job.jobUrl, "_blank");
-    }
-    // Otherwise construct URL from job ID
-    else if (job.jobId) {
+    } else if (job.jobId) {
       window.open(`https://www.linkedin.com/jobs/view/${job.jobId}/`, "_blank");
     }
   };
@@ -273,17 +252,14 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
     const job = jobs[jobIndex];
 
     try {
-      // Get existing saved jobs from localStorage
       const savedJobsStr = localStorage.getItem("jobmate_saved_jobs");
       const savedJobs = savedJobsStr ? JSON.parse(savedJobsStr) : [];
 
-      // Check if job is already saved
       const isAlreadySaved = savedJobs.some(
         (savedJob) => savedJob.jobUrl === job.jobUrl
       );
 
       if (!isAlreadySaved) {
-        // Add to saved jobs
         savedJobs.push(job);
         localStorage.setItem("jobmate_saved_jobs", JSON.stringify(savedJobs));
         alert("Job saved successfully!");
@@ -296,11 +272,9 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
     }
   };
 
-  // Format the date to a human-readable format like "1 hour ago", "2 days ago"
   const formatTimeAgo = (dateString) => {
     if (!dateString) return "";
 
-    // If it's already in a relative format like "2 days ago"
     if (dateString.includes("ago")) {
       return dateString;
     }
@@ -326,7 +300,6 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
     }
   };
 
-  // Helper function to get company initials for logo
   const getCompanyInitials = (companyName) => {
     if (!companyName) return "?";
     const words = companyName.split(" ");
@@ -339,8 +312,6 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
       .substring(0, 2)
       .toUpperCase();
   };
-
-  // Helper function to determine if a job is new (posted within 24 hours)
   const isNewJob = (job) => {
     if (!job.date && !job.agoTime) return false;
 
@@ -363,16 +334,13 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
     return false;
   };
 
-  // Helper function to generate a salary range for display purposes
   const getSalaryDisplay = (job) => {
-    // Only return actual salary data from the API, no placeholders
     if (job.salary && job.salary !== "Not specified") {
       return job.salary;
     }
     return null;
   };
 
-  // Helper function to get the appropriate CSS class for experience level
   const getExperienceLevelClass = (level) => {
     if (!level) return "entry-level-tag";
 
@@ -398,10 +366,9 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
       return "executive-tag";
     }
 
-    return "entry-level-tag"; // default
+    return "entry-level-tag";
   };
 
-  // Toggle debug mode (for development)
   const toggleDebugMode = () => {
     setDebugMode(!debugMode);
     if (!debugMode) {
@@ -412,12 +379,9 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
       console.log("Debug mode disabled");
     }
   };
-
-  // Render job tags based on available data
   const renderJobTags = (job) => {
     return (
       <div className="job-card-meta">
-        {/* Time posted tag - always show if we have date info */}
         {(job.agoTime || job.date) && (
           <div className="job-time-tag">
             <FiClock className="tag-icon" />
@@ -425,14 +389,12 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
           </div>
         )}
 
-        {/* New job tag - always show for new jobs */}
         {isNewJob(job) && (
           <div className="job-new-tag">
             <span>New</span>
           </div>
         )}
 
-        {/* Job type tag - show if available or from filter */}
         {job.type && (
           <div className="job-type-tag">
             <FiBriefcase className="tag-icon" />
@@ -440,7 +402,6 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
           </div>
         )}
 
-        {/* Remote/Hybrid/On-site tag - show if available or from filter */}
         {job.remoteFilter && (
           <div className="job-remote-tag">
             <FiGlobe className="tag-icon" />
@@ -448,7 +409,6 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
           </div>
         )}
 
-        {/* Experience level tag - show if available or from filter with dynamic color */}
         {job.experienceLevel && (
           <div
             className={`job-experience-tag ${getExperienceLevelClass(
@@ -460,7 +420,6 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
           </div>
         )}
 
-        {/* Salary tag - show if available or can be estimated */}
         {getSalaryDisplay(job) && (
           <div className="job-salary-tag">
             <FiDollarSign className="tag-icon" />
@@ -468,7 +427,6 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
           </div>
         )}
 
-        {/* Fallback tag - if no other tags are shown, show at least one */}
         {!job.type &&
           !job.remoteFilter &&
           !job.experienceLevel &&
@@ -482,6 +440,58 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
       </div>
     );
   };
+  
+  const runPhishingScan = async () => {
+    try {
+      const token = getToken();
+      if (!token) {
+        throw new Error("Authentication required");
+      }
+  
+      const updatedJobs = await Promise.all(
+        jobs.map(async (job) => {
+          const features = {
+            description_word_count: job.description ? job.description.split(" ").length : 0,
+            suspicious_word_score: ["money", "quick", "urgent"].filter(word =>
+              job.description?.toLowerCase().includes(word)
+            ).length,
+            contains_links: job.description?.toLowerCase().includes("http") || false,
+            suspicious_email_domain: 0, // You can enhance this later
+            has_salary_info: job.salary && job.salary.toLowerCase() !== "not specified",
+            company_profile_length: job.company ? job.company.length : 0,
+            is_contract: job.type && job.type.toLowerCase() === "contract"
+          };
+  
+          const response = await fetch("http://127.0.0.1:8000/api/detect-fake-job/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Token ${token}`,
+            },
+            body: JSON.stringify(features),
+          });
+  
+          if (response.ok) {
+            const phishingResult = await response.json();
+            return {
+              ...job,
+              is_fake: phishingResult.is_fake,
+              fraud_score: phishingResult.fraud_probability,
+              model_used: phishingResult.model_used,
+            };
+          }
+  
+          return job;
+        })
+      );
+  
+      setJobs(updatedJobs);
+      alert("Phishing scan complete!");
+    } catch (err) {
+      console.error("Failed to scan jobs for phishing:", err);
+      alert("Failed to run phishing scan. Please try again.");
+    }
+  };  
 
   return (
     <div className="jobs-page">
@@ -552,7 +562,6 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
           </div>
         </div>
       </header>
-
       <main className="jobs-content">
         <div className="jobs-container">
           <div className="search-section">
@@ -606,7 +615,6 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
                     : "Show Advanced Filters"}
                 </button>
               </div>
-
               {showAdvancedFilters && (
                 <div className="advanced-filters">
                   <div className="advanced-filters-grid">
@@ -666,7 +674,6 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
                         <FiChevronDown className="chevron-icon" />
                       </div>
                     </div>
-
                     <div className="filter-group">
                       <label>Sort By</label>
                       <div className="select-container">
@@ -694,6 +701,15 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
                   Clear
                 </button>
                 <button type="submit" className="search-button">
+                <button
+            type="button"
+            onClick={runPhishingScan}
+            className="scan-button"
+          >
+            Scan Jobs for Scams
+          </button>
+
+                  
                   {loading ? (
                     <>
                       <FiLoader className="spinner" /> Searching...
@@ -707,6 +723,13 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
           </div>
 
           <div className="jobs-results">
+    
+          {jobs.some(job => job.is_fake) && (
+            <div className="alert-banner scam-detected">
+              ⚠️ Warning: Some jobs in the list are flagged as potential scams.
+            </div>
+          )}
+
             <div className="results-header">
               <h3>
                 {loading
@@ -716,7 +739,6 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
                   : "No jobs found"}
               </h3>
             </div>
-
             {error && (
               <div className="error-message">
                 <FiAlertCircle /> {error}
@@ -733,7 +755,7 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
                 jobs.map((job, index) => {
                   return (
                     <div
-                      className="job-card"
+                      className={`job-card ${job.is_fake ? "scam-risk" : ""}`}
                       key={index}
                       onClick={() => handleViewJobDetails(job)}
                     >
@@ -750,14 +772,32 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
                             </div>
                           )}
                         </div>
-
                         <div className="job-card-info">
-                          <h3 className="job-title">{job.position}</h3>
+                          <h3 className="job-title">
+                            {job.position}
+                            {job.is_fake && (
+                              <span className="scam-badge" title="Scam Risk">
+                                Scam Risk
+                              </span>
+                            )}
+                          </h3>
                           <span className="job-company">{job.company}</span>
                           <span className="job-location">{job.location}</span>
+                          {typeof job.fraud_score === "number" && (
+                            <div className="fraud-score">
+                              Risk: {(job.fraud_score * 100).toFixed(0)}%
+                            </div>
+                          )}
 
                           {/* Job Tags Section - using the renderJobTags helper */}
                           {renderJobTags(job)}
+                          {job.is_fake && (
+                            <div className="job-scam-tag">
+                            <FiAlertCircle className="tag-icon" />
+                            <span>Scam Risk</span>
+                            </div>
+                          )}
+
                         </div>
                       </div>
 
@@ -807,7 +847,6 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
           </div>
         </div>
       </main>
-
       {/* Job Detail Modal */}
       {selectedJob && (
         <div className="job-detail-modal active">
@@ -835,7 +874,6 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
                   <p className="job-company-name">{selectedJob.company}</p>
                 </div>
               </div>
-
               <div className="job-detail-meta">
                 <div className="job-detail-meta-item">
                   <FiMapPin />
@@ -874,6 +912,20 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
                     <span>{getSalaryDisplay(selectedJob)}</span>
                   </div>
                 )}
+
+                {typeof selectedJob.fraud_score === "number" && (
+                  <div className="job-detail-meta-item scam-risk">
+                    <FiAlertCircle />
+                    <span>Scam Risk: {(selectedJob.fraud_score * 100).toFixed(0)}%</span>
+                  </div>
+                )}
+
+                {selectedJob.is_fake && (
+                  <div className="phishing-warning">
+                    ⚠️ Warning: This job is predicted as a potential scam.
+                  </div>
+                )}
+
               </div>
             </div>
 

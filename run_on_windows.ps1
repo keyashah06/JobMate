@@ -160,7 +160,7 @@ try {
     Start-Frontend
 
     # Display helpful information
-    Write-ColorOutput "`n===== JobMate is now running! =====" "Cyan"
+    Write-ColorOutput "n===== JobMate is now running! =====" "Cyan"
     Write-ColorOutput "Backend API: http://127.0.0.1:8000/" "Yellow"
     
     # Check for Vite configuration to determine the port

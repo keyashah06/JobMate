@@ -1027,3 +1027,24 @@
 .job-card:nth-child(5) {
   animation-delay: 0.2s;
 }
+
+.job-card.scam-risk {
+  background-color: #fff2f2;
+  border: 1px solid #ff4d4f;
+}
+
+/* Add more delays for additional cards as needed */
+.scam-badge {
+  background: #ff4d4f;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 8px;
+  font-size: 12px;
+}
+
+.fraud-score {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #b30000;
+}

@@ -28,20 +28,27 @@ const LoginForm = ({
 
     try {
       const response = await axios.post("http://127.0.0.1:8000/auth/login/", {
-        username: email, // Make sure we're using email as username
-        password: password,
+        email,
+        password,
       });
 
-      if (response.data && response.data.token) {
-        // Store token in localStorage for future authenticated requests
-        localStorage.setItem("jobmate_token", response.data.token);
+      const data = response.data;
 
-        if (onLoginSuccess) {
-          onLoginSuccess(email, password);
-        }
-      } else {
-        setError("Invalid credentials or unexpected response.");
+    if (data?.mfa_required) {
+      if (data.username) {
+        localStorage.setItem("jobmate_username", data.username);
       }
+      if (onLoginSuccess) {
+        onLoginSuccess(email);
+      }
+    } else if (data?.token) {
+        localStorage.setItem("jobmate_token", data.token);
+        if (onLoginSuccess) {
+          onLoginSuccess(email);
+        }
+    } else {
+        setError("Invalid credentials or unexpected response.");
+      }      
     } catch (error) {
       console.error("Login error:", error);
       setError("Invalid credentials. Please try again.");

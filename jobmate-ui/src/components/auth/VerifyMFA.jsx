@@ -1,26 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { FiLock, FiRotateCcw } from "react-icons/fi";
+import "./VerifyMFA.css";
 
-const VerifyMFA = () => {
+const VerifyMFA = ({ onMFASuccess }) => {
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false); // API call state
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const email = localStorage.getItem("email"); // Retrieve stored email
+  const email = localStorage.getItem("email");
 
-  // Redirect to login if no email is stored (if session expired)
   useEffect(() => {
     if (!email) {
       setError("Session expired. Please log in again.");
+      setTimeout(() => navigate("/"), 2000);
     }
-  }, [email]);
+  }, [email, navigate]);
 
   const handleVerifyMFA = async () => {
     setError("");
     setMessage("");
-    setLoading(true); // Disable button while verifying MFA
+    setLoading(true);
 
     try {
       const response = await fetch("http://127.0.0.1:8000/auth/verify-mfa/", {
@@ -30,28 +32,21 @@ const VerifyMFA = () => {
       });
 
       const data = await response.json();
-      console.log("🔹 MFA Response:", data);
-      console.log("✅ Token Received:", data.token);
-      console.log("✅ jobmate_token now in localStorage:", localStorage.getItem("jobmate_token"));
 
-
-      if (response.ok) {
-        console.log("MFA Verified! Redirecting...");
+      if (response.ok && data.token) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("jobmate_username", data.username); // ✅ store full name here!
+        console.log("Saved jobmate_username:", data.username);
         setMessage("✅ MFA verified. Redirecting to dashboard...");
-        console.log("Token Received:", data.token);
-        localStorage.setItem("jobmate_token", data.token); // Store token
-        console.log("localStorage now:", localStorage);
-        // Redirect to dashboard after successful MFA verification
-        setTimeout(() => navigate("/dashboard"), 2000); // Redirect after 2s delay
+        onMFASuccess(data.token, data.username); // Pass token and username to parent
       } else {
-        console.log("MFA Verification Error Data:", data);
         setError(data.message || "❌ MFA verification failed.");
       }
     } catch (err) {
       console.error("❌ ERROR during MFA verification:", err);
       setError("Something went wrong. Please try again.");
     } finally {
-      setLoading(false); // Re-enable button
+      setLoading(false);
     }
   };
 
@@ -84,42 +79,52 @@ const VerifyMFA = () => {
   };
 
   return (
-    <div className="container">
-      <h2>Verify MFA Code</h2>
-      {error ? (
-        <p className="error">{error}</p>
-      ) : (
-        <p>Enter the MFA code sent to your email.</p>
-      )}
+    <div className="verify-page">
+      <div className="verify-container">
+        <h1 className="app-title">Verify MFA</h1>
+        <p className="app-subtitle">Enter the code sent to <strong>{email}</strong></p>
 
-      {email ? (
-        <>
-          <input
-            type="text"
-            placeholder="Enter MFA Code"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-          />
+        {error && <div className="error-message">{error}</div>}
+        {message && <div className="success-message">{message}</div>}
 
-          {message && <div className="success">{message}</div>}
+        <div className="form-group">
+          <div className="input-icon-wrapper">
+            <span className="input-icon">
+              <FiLock />
+            </span>
+            <input
+              type="text"
+              placeholder="Enter MFA Code"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              required
+              disabled={loading}
+            />
+          </div>
+        </div>
 
-          <button onClick={handleVerifyMFA} disabled={loading}>
+        <div className="button-group">
+          <button
+            className="primary-button"
+            onClick={handleVerifyMFA}
+            disabled={loading || !code.trim()}
+          >
             {loading ? "Verifying..." : "Verify"}
           </button>
-          <button onClick={handleResendMFA} disabled={loading}>
-            {loading ? "Resending..." : "Resend Code"}
+
+          <button
+            className="link-button"
+            onClick={handleResendMFA}
+            disabled={loading}
+          >
+            <FiRotateCcw /> Resend Code
           </button>
 
-          {/* NEW: Back to Login Button - Visible at all times */}
-          <button onClick={() => navigate("/")} className="back-button">
+          <button className="link-button" onClick={() => navigate("/")}>
             Back to Login
           </button>
-        </>
-      ) : (
-        <button onClick={() => navigate("/")} className="back-button">
-          Back to Login
-        </button>
-      )}
+        </div>
+      </div>
     </div>
   );
 };

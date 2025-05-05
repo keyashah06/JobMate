@@ -60,23 +60,39 @@ def detect_fake_job(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def linkedin_jobs(request):
-    # Simulate dummy job postings
-    fake_jobs = [
-        {
-            "position": "Software Engineer",
-            "company": "FakeTech Inc.",
-            "location": "Remote",
-            "jobUrl": "https://www.linkedin.com/jobs/view/1234567890/",
-            "description": "Looking for passionate devs. Quick money!",
-            "salary": "$100,000",
-        },
-        {
-            "position": "Junior Web Developer",
-            "company": "HelloWeb LLC",
-            "location": "New York, NY",
-            "jobUrl": "https://www.linkedin.com/jobs/view/2345678901/",
-            "description": "Exciting opportunity in front-end.",
-            "salary": "Not specified",
-        },
-    ]
-    return Response(fake_jobs, status=status.HTTP_200_OK)
+    from phishing.predict import predict_phishing
+
+    try:
+        jobs = request.data.get("jobs", [])
+        if not isinstance(jobs, list):
+            return Response({"error": "Jobs must be a list"}, status=status.HTTP_400_BAD_REQUEST)
+
+        enriched_jobs = []
+        for job in jobs:
+            try:
+                features = {
+                    "description_word_count": len(job.get("description", "").split()),
+                    "suspicious_word_score": sum(1 for word in ["money", "quick", "urgent"] if word in job.get("description", "").lower()),
+                    "contains_links": "http" in job.get("description", "").lower(),
+                    "suspicious_email_domain": 0,  # You can expand this
+                    "has_salary_info": job.get("salary", "").lower() != "not specified",
+                    "company_profile_length": len(job.get("company", "")),
+                    "is_contract": job.get("type", "").lower() == "contract"
+                }
+
+                phishing_result = predict_phishing(features)
+                job.update(phishing_result)
+                enriched_jobs.append(job)
+            except Exception as e:
+                job.update({
+                    "is_fake": False,
+                    "fraud_probability": 0.0,
+                    "model_used": "error",
+                    "error": str(e)
+                })
+                enriched_jobs.append(job)
+
+        return Response(enriched_jobs, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

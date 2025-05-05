@@ -1,9 +1,15 @@
 # api/pipeline.py
 import joblib
 import pandas as pd
+import os
 
-log_model = joblib.load("fraud_model_logistic.pkl")
-nb_model = joblib.load("fraud_model_nb.pkl")
+# Load models once (at module level)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+log_model_path = os.path.join(BASE_DIR, "fraud_model_logistic.pkl")
+nb_model_path = os.path.join(BASE_DIR, "fraud_model_nb.pkl")
+
+log_model = joblib.load(log_model_path)
+nb_model = joblib.load(nb_model_path)
 
 FEATURE_COLUMNS = [
     "description_word_count", "suspicious_word_score", "contains_links",
@@ -22,11 +28,11 @@ def predict_phishing(features: dict):
         final_prob = prob_log
         model_used = "logistic_regression"
 
-    prediction = 1 if final_prob > 0.55 else 0
+    prediction = int(final_prob > 0.55)
 
     return {
         "is_fake": bool(prediction),
         "fraud_probability": round(final_prob, 2),
         "model_used": model_used,
-        "message": "🚨 This job may be fake!" if prediction == 1 else "✅ This job looks legitimate."
+        "message": "🚨 This job may be fake!" if prediction else "✅ This job looks legitimate."
     }

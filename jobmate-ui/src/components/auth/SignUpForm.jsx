@@ -72,7 +72,7 @@ const SignUpForm = ({ onLoginClick }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username: email,
+          username: name,
           email,
           password,
         }),
@@ -80,6 +80,8 @@ const SignUpForm = ({ onLoginClick }) => {
 
       const data = await response.json();
       if (response.ok) {
+        localStorage.setItem("jobmate_username", name);
+        localStorage.setItem("email", email);
         setSuccessPopup(true);
       } else {
         setError(data.error || "Something went wrong");
