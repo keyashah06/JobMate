@@ -65,7 +65,6 @@ def register_view(request):
         return Response({"message": "Email already registered."}, status=400)
 
     user = User.objects.create_user(username=username, email=email, password=password)
-    send_mfa_email(user)
 
     return Response({"message": f"User '{username}' registered. MFA code sent."}, status=201)
 

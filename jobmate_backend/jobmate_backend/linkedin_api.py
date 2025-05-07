@@ -139,15 +139,25 @@ def linkedin_jobs(request):
                     job_url = link_element.get('href').split('?')[0] if link_element else None
 
                     job_description = f"{title_element.text.strip() if title_element else ''} at {company_element.text.strip() if company_element else ''} in {location_element.text.strip() if location_element else ''}"
-                    prediction = predict_phishing(job_description)
+                    features = {
+                        "description_word_count": len(job_description.split()),
+                        "suspicious_word_score": sum(1 for word in ["money", "quick", "urgent"] if word in job_description.lower()),
+                        "contains_links": "http" in job_description.lower(),
+                        "suspicious_email_domain": 0,  # Optional enhancement
+                        "has_salary_info": 0,          # You can improve this later
+                        "company_profile_length": len(company_element.text.strip() if company_element else ""),
+                        "is_contract": 0               # You can adjust if needed
+                    }
+                    prediction = predict_phishing(features)
 
                     job = {
                         "position": title_element.text.strip() if title_element else "Unknown Position",
                         "company": company_element.text.strip() if company_element else "Unknown Company",
                         "location": location_element.text.strip() if location_element else location or "Unknown Location",
                         "jobUrl": job_url or "",
-                        "is_scam": prediction.get('is_scam', False),
-                        "confidence": prediction.get('confidence', 0.0),
+                        "is_fake": prediction.get('is_scam', False),
+                        "fraud_score": prediction.get('fraud_probability', 0.0),
+                        "model_used": prediction.get('model_used', ''),
                     }
 
                     if date_element:

@@ -30,7 +30,15 @@ def detect_fake_job(request):
             if not all(col in data for col in FEATURE_COLUMNS):
                 return JsonResponse({"error": "Missing required features"}, status=400)
 
-            input_df = pd.DataFrame([data])
+            clean_data = {}
+            for key in FEATURE_COLUMNS:
+                value = data.get(key, 0)
+                try:
+                    clean_data[key] = float(value) if value != '' else 0
+                except ValueError:
+                    clean_data[key] = 0
+
+            input_df = pd.DataFrame([clean_data])
             prob_log = log_model.predict_proba(input_df)[:, 1][0]
             prob_nb = nb_model.predict_proba(input_df)[:, 1][0]
 
@@ -51,6 +59,9 @@ def detect_fake_job(request):
             })
 
         except Exception as e:
+            import traceback
+            traceback_str = traceback.format_exc()
+            print(f"Error in detect_fake_job: {traceback_str}")
             return JsonResponse({"error": str(e)}, status=500)
 
     return JsonResponse({"message": "Send a POST request with job features."})

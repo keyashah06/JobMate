@@ -104,7 +104,14 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
           Authorization: `Token ${token}`,
         },
         body: JSON.stringify({
-          jobs: jobs,
+          keyword: searchTerm,
+          location: location,
+          jobType: jobType,
+          experienceLevel: experienceLevel,
+          remoteFilter: remoteFilter,
+          dateSincePosted: dateSincePosted,
+          limit: "20",
+          sortBy: sortBy === "recent" ? "recent" : "relevant",
         }),
       });
 
@@ -470,7 +477,7 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
             },
             body: JSON.stringify(features),
           });
-  
+      
           if (response.ok) {
             const phishingResult = await response.json();
             return {
@@ -478,9 +485,11 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
               is_fake: phishingResult.is_fake,
               fraud_score: phishingResult.fraud_probability,
               model_used: phishingResult.model_used,
+              severity: phishingResult.severity,
+              explanation: phishingResult.explanation
             };
           }
-  
+      
           return job;
         })
       );
@@ -781,6 +790,25 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
                               </span>
                             )}
                           </h3>
+                          
+                          {job.is_fake && (
+                            <div className="scam-extra-info">
+                              <div className={`scam-severity ${job.severity}`}>
+                                Severity: {job.severity}
+                              </div>
+                              {job.explanation && job.explanation.length > 0 && (
+                                <details>
+                                  <summary>Why flagged?</summary>
+                                  <ul>
+                                    {job.explanation.map((reason, i) => (
+                                      <li key={i}>{reason}</li>
+                                    ))}
+                                  </ul>
+                                </details>
+                              )}
+                            </div>
+                          )}
+
                           <span className="job-company">{job.company}</span>
                           <span className="job-location">{job.location}</span>
                           {typeof job.fraud_score === "number" && (
@@ -921,8 +949,13 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
                 )}
 
                 {selectedJob.is_fake && (
-                  <div className="phishing-warning">
-                    ⚠️ Warning: This job is predicted as a potential scam.
+                  <div>
+                    <div className="phishing-warning">
+                      ⚠️ Warning: This job is predicted as a potential scam.
+                    </div>
+                    <div className={`scam-severity ${selectedJob.severity}`}>
+                      Severity: {selectedJob.severity}
+                    </div>
                   </div>
                 )}
 

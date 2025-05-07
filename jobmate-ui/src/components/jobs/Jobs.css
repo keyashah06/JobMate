@@ -1048,3 +1048,11 @@
   font-size: 13px;
   color: #b30000;
 }
+
+.scam-severity {
+  font-weight: bold;
+}
+
+.scam-severity.Low { color: green; }
+.scam-severity.Medium { color: orange; }
+.scam-severity.High { color: red; }
