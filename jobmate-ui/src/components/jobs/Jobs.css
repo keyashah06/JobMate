@@ -1074,26 +1074,21 @@
   visibility: visible !important;
 }
 
-.scam-severity.low {
-  color: green;
+.scam-extra-info .scam-severity.low {
+  color: green !important;
 }
-
-.scam-severity.medium {
-  color: orange;
+.scam-extra-info .scam-severity.medium {
+  color: orange !important;
 }
-
-.scam-severity.high {
-  color: red;
+.scam-extra-info .scam-severity.high {
+  color: red !important;
 }
-
-.scam-severity.unknown {
-  color: gray;
+.scam-extra-info .scam-severity.very-high {
+  color: darkred !important;
 }
-
-.scam-severity.very-high {
-  color: darkred;
+.scam-extra-info .scam-severity.very-low {
+  color: lightgreen !important;
 }
-
-.scam-severity.very-low {
-  color: lightgreen;
+.scam-extra-info .scam-severity.unknown {
+  color: gray !important;
 }

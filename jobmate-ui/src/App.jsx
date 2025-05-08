@@ -68,7 +68,7 @@ function App() {
   };
 
   const renderPage = () => {
-    if (mfaPending) return <VerifyMFA onMFASuccess={handleMFASuccess} />;
+    if (mfaPending) return <VerifyMFA onMFASuccess={handleMFASuccess} onCancelMFA={() => setMfaPending(false)} />;
     if (!isLoggedIn) return <LoginPage onLoginSuccess={handleLoginTriggerMFA} />;
 
     switch (currentPage) {

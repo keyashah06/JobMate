@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FiLock, FiRotateCcw } from "react-icons/fi";
 import "./VerifyMFA.css";
 
-const VerifyMFA = ({ onMFASuccess }) => {
+const VerifyMFA = ({ onMFASuccess, onCancelMFA }) => {
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
@@ -120,7 +120,7 @@ const VerifyMFA = ({ onMFASuccess }) => {
             <FiRotateCcw /> Resend Code
           </button>
 
-          <button className="link-button" onClick={() => navigate("/")}>
+          <button className="link-button" onClick={onCancelMFA}>
             Back to Login
           </button>
         </div>
