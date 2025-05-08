@@ -794,7 +794,7 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
                           
                           {job.is_fake && (
                             <div className="scam-extra-info">
-                              <div className={`scam-severity ${job.severity}`}>
+                              <div className={`scam-severity ${job.severity.toLowerCase()}`}>
                                 Severity: {job.severity}
                               </div>
                               {job.explanation && job.explanation.length > 0 && (
@@ -954,11 +954,12 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
                     <div className="phishing-warning">
                       ⚠️ Warning: This job is predicted as a potential scam.
                     </div>
-                    <div className={`scam-severity ${selectedJob.severity}`}>
+                    <div className={`scam-severity ${selectedJob.severity.toLowerCase()}`}>
                       Severity: {selectedJob.severity}
                     </div>
                   </div>
                 )}
+
 
               </div>
             </div>

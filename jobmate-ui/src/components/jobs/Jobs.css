@@ -1052,10 +1052,6 @@
   font-weight: bold;
 }
 
-.scam-severity.low { color: green; }
-.scam-severity.medium { color: orange; }
-.scam-severity.high { color: red; }
-.scam-severity.unknown { color: gray; }
 .scam-warning {
   display: none;
   opacity: 0;
@@ -1076,5 +1072,28 @@
   display: block !important;
   opacity: 1 !important;
   visibility: visible !important;
-  color: red !important; /* force for testing */
+}
+
+.scam-severity.low {
+  color: green;
+}
+
+.scam-severity.medium {
+  color: orange;
+}
+
+.scam-severity.high {
+  color: red;
+}
+
+.scam-severity.unknown {
+  color: gray;
+}
+
+.scam-severity.very-high {
+  color: darkred;
+}
+
+.scam-severity.very-low {
+  color: lightgreen;
 }
