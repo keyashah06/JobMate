@@ -1046,16 +1046,22 @@
 .fraud-score {
   margin-top: 4px;
   font-size: 13px;
-  color: #b30000;
 }
 
 .scam-severity {
   font-weight: bold;
 }
 
-.scam-severity.Low { color: green; }
-.scam-severity.Medium { color: orange; }
-.scam-severity.High { color: red; }
+.scam-severity.low { color: green; }
+.scam-severity.medium { color: orange; }
+.scam-severity.high { color: red; }
+.scam-severity.unknown { color: gray; }
+.scam-warning {
+  display: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
 
 .scam-extra-info {
   margin-top: 8px;
