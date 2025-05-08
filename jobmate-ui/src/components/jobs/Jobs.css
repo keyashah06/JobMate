@@ -1056,3 +1056,19 @@
 .scam-severity.Low { color: green; }
 .scam-severity.Medium { color: orange; }
 .scam-severity.High { color: red; }
+
+.scam-extra-info {
+  margin-top: 8px;
+  background: #fff7f7;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ffcccc;
+}
+
+.job-detail-modal.active .phishing-warning,
+.job-detail-modal.active .scam-severity {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  color: red !important; /* force for testing */
+}

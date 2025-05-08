@@ -11,14 +11,16 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 import json
+import traceback
 
 # Load models
 log_model = joblib.load("fraud_model_logistic.pkl")
 nb_model = joblib.load("fraud_model_nb.pkl")
 
 # Feature list
-FEATURE_COLUMNS = ["description_word_count", "suspicious_word_score", "contains_links",
-                   "suspicious_email_domain", "has_salary_info", "company_profile_length", "is_contract"]
+FEATURE_COLUMNS = [
+    "description_word_count", "suspicious_word_score", "contains_links",
+    "suspicious_email_domain", "has_salary_info", "company_profile_length", "is_contract"]
 
 # PHISHING DETECTION ROUTE
 @csrf_exempt
@@ -81,19 +83,27 @@ def linkedin_jobs(request):
         enriched_jobs = []
         for job in jobs:
             try:
+                # Use fallback if no description
+                description = job.get("description", "") or job.get("title", "") or "urgent quick money http"
+                email_domain = job.get("companyEmail", "").split("@")[-1].lower() if "@" in job.get("companyEmail", "") else ""
+                free_email_domains = ["gmail.com", "yahoo.com", "hotmail.com", "outlook.com"]
+
                 features = {
-                    "description_word_count": len(job.get("description", "").split()),
-                    "suspicious_word_score": sum(1 for word in ["money", "quick", "urgent"] if word in job.get("description", "").lower()),
-                    "contains_links": "http" in job.get("description", "").lower(),
-                    "suspicious_email_domain": 0,  # You can expand this
-                    "has_salary_info": job.get("salary", "").lower() != "not specified",
+                    "description_word_count": len(description.split()),
+                    "suspicious_word_score": sum(1 for word in ["money", "quick", "urgent"] if word in description.lower()),
+                    "contains_links": int("http" in description.lower()),
+                    "suspicious_email_domain": int(email_domain in free_email_domains),
+                    "has_salary_info": int(job.get("salary", "").lower() != "not specified"),
                     "company_profile_length": len(job.get("company", "")),
-                    "is_contract": job.get("type", "").lower() == "contract"
+                    "is_contract": int(job.get("type", "").lower() == "contract"),
                 }
+
+                print("🔍 FEATURES SENT TO MODEL:", features)
 
                 phishing_result = predict_phishing(features)
                 job.update(phishing_result)
                 enriched_jobs.append(job)
+
             except Exception as e:
                 job.update({
                     "is_fake": False,
@@ -106,4 +116,6 @@ def linkedin_jobs(request):
         return Response(enriched_jobs, status=status.HTTP_200_OK)
 
     except Exception as e:
+        traceback_str = traceback.format_exc()
+        print(f"Error in linkedin_jobs: {traceback_str}")
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -4,8 +4,7 @@ from .model_utils import load_model
 
 FEATURE_COLUMNS = [
     "description_word_count", "suspicious_word_score", "contains_links",
-    "suspicious_email_domain", "has_salary_info", "company_profile_length", "is_contract",
-    "missing_website", "domain_age_days", "title_contains_crypto"
+    "suspicious_email_domain", "has_salary_info", "company_profile_length", "is_contract"
 ]
 
 log_model, nb_model = load_model()
@@ -37,12 +36,6 @@ def predict_phishing(features: dict) -> dict:
         explanation.append("Contains a link")
     if input_features["suspicious_email_domain"]:
         explanation.append("Uses free email domain")
-    if input_features["missing_website"]:
-        explanation.append("Missing company website")
-    if input_features["domain_age_days"] < 365:
-        explanation.append("Company website is less than 1 year old")
-    if input_features["title_contains_crypto"]:
-        explanation.append("Job title mentions 'crypto'")
 
     return {
         "is_fake": final_prob > 0.55,

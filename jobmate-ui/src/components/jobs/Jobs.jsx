@@ -159,6 +159,10 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
         enhancedJob.is_scam = job.is_scam || false;
         enhancedJob.confidence = job.confidence || 0;
 
+        enhancedJob.severity = job.severity || "Low";
+        enhancedJob.explanation = job.explanation || [];
+        enhancedJob.fraud_score = job.fraud_score || 0;
+
         return enhancedJob;
       });
 
@@ -229,6 +233,9 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
               // ✅ PHISHING DETECTION IN DETAILS
               is_scam: detailedJob.is_scam || prev.is_scam || false,
               confidence: detailedJob.confidence || prev.confidence || 0,
+              fraud_score: detailedJob.fraud_score ?? prev.fraud_score ?? 0,
+              severity: detailedJob.severity ?? prev.severity ?? "Low",
+              explanation: detailedJob.explanation ?? prev.explanation ?? [],
             };
 
             if (debugMode) {
@@ -462,12 +469,12 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
             suspicious_word_score: ["money", "quick", "urgent"].filter(word =>
               job.description?.toLowerCase().includes(word)
             ).length,
-            contains_links: job.description?.toLowerCase().includes("http") || false,
-            suspicious_email_domain: 0, // You can enhance this later
-            has_salary_info: job.salary && job.salary.toLowerCase() !== "not specified",
+            contains_links: job.description?.toLowerCase().includes("http") ? 1 : 0,
+            suspicious_email_domain: 0,
+            has_salary_info: job.salary && job.salary.toLowerCase() !== "not specified" ? 1 : 0,
             company_profile_length: job.company ? job.company.length : 0,
-            is_contract: job.type && job.type.toLowerCase() === "contract"
-          };
+            is_contract: job.type && job.type.toLowerCase() === "contract" ? 1 : 0
+          };          
   
           const response = await fetch("http://127.0.0.1:8000/api/detect-fake-job/", {
             method: "POST",
@@ -702,23 +709,10 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
               )}
 
               <div className="search-buttons">
-                <button
-                  type="button"
-                  onClick={handleClearFilters}
-                  className="clear-button"
-                >
+                <button type="button" onClick={handleClearFilters} className="clear-button">
                   Clear
                 </button>
                 <button type="submit" className="search-button">
-                <button
-            type="button"
-            onClick={runPhishingScan}
-            className="scan-button"
-          >
-            Scan Jobs for Scams
-          </button>
-
-                  
                   {loading ? (
                     <>
                       <FiLoader className="spinner" /> Searching...
@@ -726,6 +720,13 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
                   ) : (
                     <>Search Jobs</>
                   )}
+                </button>
+                <button
+                  type="button"
+                  onClick={runPhishingScan}
+                  className="scan-button"
+                >
+                  Scan Jobs for Scams
                 </button>
               </div>
             </form>
