@@ -1,5 +1,6 @@
 import os
 import secrets
+import time
 from datetime import timedelta
 
 from django.conf import settings
@@ -38,6 +39,8 @@ def send_mfa_email(user):
         - JobMate Security Team
         """
 
+        start = time.time()
+
         send_mail(
             subject="🔐 Your JobMate MFA Code",
             message=message,
@@ -45,6 +48,10 @@ def send_mfa_email(user):
             recipient_list=[user.email],
             fail_silently=False,
         )
+
+        end = time.time()
+        print(f"📧 MFA email sent in {end - start:.2f} seconds.")
+        
     except Exception as e:
         print(f"ERROR sending MFA email: {e}")
 
