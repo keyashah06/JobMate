@@ -273,3 +273,5 @@ const JobDetail = ({ jobId, jobUrl, onClose }) => {
 };
 
 export default JobDetail;
+
+

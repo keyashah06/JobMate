@@ -247,3 +247,5 @@ const SignUpForm = ({ onLoginClick }) => {
 };
 
 export default SignUpForm;
+
+

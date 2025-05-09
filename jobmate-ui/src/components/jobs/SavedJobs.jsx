@@ -232,3 +232,5 @@ const SavedJobs = ({ onNavigate, userName = "User" }) => {
 };
 
 export default SavedJobs;
+
+

@@ -1,25 +1,37 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./Dashboard.css";
 import UploadResume from "../resume/UploadResume";
 import {
-  FiBell,
-  FiSettings,
   FiUpload,
   FiSearch,
   FiUserPlus,
   FiUser,
   FiFile,
-  FiBriefcase,
 } from "react-icons/fi";
 
 const Dashboard = ({ userName, onNavigate }) => {
-  const [isActivelyLooking, setIsActivelyLooking] = useState(true);
   const [currentView, setCurrentView] = useState("dashboard");
+  const [personalInfo, setPersonalInfo] = useState({
+    firstName: "",
+    lastName: "",
+  });
 
-  const toggleActiveStatus = () => {
-    setIsActivelyLooking(!isActivelyLooking);
+  // Load personal info from localStorage
+  useEffect(() => {
+    const storedPersonalInfo = localStorage.getItem("jobmate_personal_info");
+    if (storedPersonalInfo) {
+      setPersonalInfo(JSON.parse(storedPersonalInfo));
+    }
+  }, []);
+
+  // Get the display name (from personal info if available, otherwise use userName)
+  const getDisplayName = () => {
+    if (personalInfo.firstName) {
+      return `${personalInfo.firstName} ${personalInfo.lastName}`;
+    }
+    return userName;
   };
 
   const handleNavigate = (view) => {
@@ -31,7 +43,7 @@ const Dashboard = ({ userName, onNavigate }) => {
 
   // Render the UploadResume component when the view is "upload-resume"
   if (currentView === "upload-resume") {
-    return <UploadResume userName={userName} onNavigate={handleNavigate} />;
+    return <UploadResume userName={getDisplayName()} onNavigate={handleNavigate} />;
   }
 
   return (
@@ -73,24 +85,18 @@ const Dashboard = ({ userName, onNavigate }) => {
           </nav>
         </div>
         <div className="user-section">
-          <button className="notification-button">
-            <FiBell />
-          </button>
-          <button className="settings-button">
-            <FiSettings />
-          </button>
           <div 
-          className="user-avatar"
-          onClick={() => handleNavigate("profile")}
-          style={{ cursor: 'pointer' }}
-        >
-          <div className="initials">
-            {userName
-            .split(" ")
-            .map((n) => n[0])
-            .join("")}
+            className="user-avatar"
+            onClick={() => handleNavigate("profile")}
+            style={{ cursor: 'pointer' }}
+          >
+            <div className="initials">
+              {getDisplayName()
+                .split(" ")
+                .map((n) => n[0])
+                .join("")}
             </div>
-            </div>
+          </div>
         </div>
       </header>
 
@@ -99,28 +105,20 @@ const Dashboard = ({ userName, onNavigate }) => {
           <div className="user-info">
             <div className="user-avatar large">
               <div className="initials">
-                {userName
+                {getDisplayName()
                   .split(" ")
                   .map((n) => n[0])
                   .join("")}
               </div>
             </div>
             <div className="welcome-text">
-              <h2>Welcome back, {userName.split(" ")[0]}!</h2>
+              <h2>Welcome back, {getDisplayName().split(" ")[0]}!</h2>
               <p>Complete your profile to attract more opportunities</p>
             </div>
           </div>
-          <button
-            className={`status-toggle ${
-              isActivelyLooking ? "active" : "inactive"
-            }`}
-            onClick={toggleActiveStatus}
-          >
-            {isActivelyLooking ? "Actively Looking" : "Not Actively Looking"}
-          </button>
         </div>
 
-        <div className="action-cards">
+        <div className="action-cards longer">
           <div className="action-card">
             <div className="action-icon upload">
               <FiUpload />
@@ -153,51 +151,14 @@ const Dashboard = ({ userName, onNavigate }) => {
             <div className="action-icon match">
               <FiUserPlus />
             </div>
-            <h3>Company Matches</h3>
-            <p>Discover companies that match your preferences</p>
-            <button className="action-button">View Matches</button>
-          </div>
-        </div>
-
-        <div className="profile-section">
-          <h2>Complete Your Profile</h2>
-
-          <div className="profile-items">
-            <div className="profile-item">
-              <div className="profile-icon">
-                <FiUser />
-              </div>
-              <div className="profile-item-content">
-                <span>Personal Information</span>
-              </div>
-              <button className="edit-button">Edit</button>
-            </div>
-
-            <div className="profile-item">
-              <div className="profile-icon">
-                <FiFile />
-              </div>
-              <div className="profile-item-content">
-                <span>Resume</span>
-              </div>
-              <button
-                className="edit-button"
-                onClick={() => handleNavigate("upload-resume")}
-              >
-                Upload
-              </button>
-            </div>
-
-            <div className="profile-item">
-              <div className="profile-icon">
-                <FiBriefcase />
-              </div>
-              <div className="profile-item-content">
-                <span>Work Experience</span>
-              </div>
-              <button className="edit-button">Add</button>
-            </div>
-            
+            <h3>Personal Info</h3>
+            <p>Put in information for your resume</p>
+            <button 
+              className="action-button"
+              onClick={() => handleNavigate("profile")}
+            >
+              Edit Info
+            </button>
           </div>
         </div>
       </main>
@@ -206,3 +167,4 @@ const Dashboard = ({ userName, onNavigate }) => {
 };
 
 export default Dashboard;
+
