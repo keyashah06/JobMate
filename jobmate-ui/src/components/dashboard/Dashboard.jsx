@@ -77,10 +77,10 @@ const Dashboard = ({ userName, onNavigate }) => {
               className="nav-link"
               onClick={(e) => {
                 e.preventDefault();
-                handleNavigate("applications");
+                handleNavigate("saved-jobs");
               }}
             >
-              Applications
+              Saved Jobs
             </a>
           </nav>
         </div>
@@ -167,4 +167,3 @@ const Dashboard = ({ userName, onNavigate }) => {
 };
 
 export default Dashboard;
-

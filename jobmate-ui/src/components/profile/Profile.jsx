@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from "react";
 import {
-  FiBell,
-  FiSettings,
   FiEdit2,
   FiUser,
   FiMail,
@@ -40,31 +38,15 @@ const Profile = ({ onNavigate, userName = "User" }) => {
     veteran: false,
   })
 
-  // Remove the Education section and its related state/functions
-  // 1. Remove the educationInfo state
-  // const [educationInfo, setEducationInfo] = useState({
-  //   institution: "",
-  //   degree: "",
-  //   fieldOfStudy: "",
-  //   graduationDate: "",
-  // });
-
-  // 2. Remove the editingEducation state
-  // const [editingEducation, setEditingEducation] = useState(false);
-
-  // Edit states
   const [editingPersonal, setEditingPersonal] = useState(false)
   const [editingEmployment, setEditingEmployment] = useState(false)
-  // const [editingEducation, setEditingEducation] = useState(false);
-
-  // State for skills
+  
   const [skills, setSkills] = useState([])
   const [newSkill, setNewSkill] = useState("")
 
-  // Load user data on component mount
+
   useEffect(() => {
-    // In a real app, you would fetch this from your backend
-    // For now, we'll use mock data
+   
     const loadUserData = () => {
       // Check if we have data in localStorage
       const storedPersonalInfo = localStorage.getItem("jobmate_personal_info")
@@ -91,11 +73,6 @@ const Profile = ({ onNavigate, userName = "User" }) => {
         setEmploymentInfo(JSON.parse(storedEmploymentInfo))
       }
 
-      // 5. Remove the education info loading from useEffect
-      // if (storedEducationInfo) {
-      //   setEducationInfo(JSON.parse(storedEducationInfo));
-      // }
-
       if (storedSkills) {
         setSkills(JSON.parse(storedSkills))
       }
@@ -115,12 +92,6 @@ const Profile = ({ onNavigate, userName = "User" }) => {
     setEditingEmployment(false)
   }
 
-  // 3. Remove the saveEducationInfo function
-  // const saveEducationInfo = () => {
-  //   localStorage.setItem("jobmate_education_info", JSON.stringify(educationInfo));
-  //   setEditingEducation(false);
-  // };
-
   const saveSkills = () => {
     localStorage.setItem("jobmate_skills", JSON.stringify(skills))
   }
@@ -138,12 +109,6 @@ const Profile = ({ onNavigate, userName = "User" }) => {
       [name]: type === "checkbox" ? checked : value,
     }))
   }
-
-  // 4. Remove the handleEducationChange function
-  // const handleEducationChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setEducationInfo((prev) => ({ ...prev, [name]: value }));
-  // };
 
   // Handle adding skills
   const handleAddSkill = () => {
@@ -210,25 +175,9 @@ const Profile = ({ onNavigate, userName = "User" }) => {
             >
               Saved Jobs
             </a>
-            <a
-              href="#"
-              className="nav-link"
-              onClick={(e) => {
-                e.preventDefault()
-                onNavigate("applications")
-              }}
-            >
-              Applications
-            </a>
           </nav>
         </div>
         <div className="user-section">
-          <button className="notification-button">
-            <FiBell />
-          </button>
-          <button className="settings-button">
-            <FiSettings />
-          </button>
           <div className="user-avatar active">
             <div className="initials">{getUserInitials()}</div>
           </div>
@@ -709,129 +658,6 @@ const Profile = ({ onNavigate, userName = "User" }) => {
             )}
           </div>
 
-          {/* 6. Remove the entire Education Section JSX block */}
-          {/* Education Section */}
-          {/* <div className="profile-section">
-            <div className="section-header">
-              <h2>Education</h2>
-              <button
-                className="edit-button"
-                onClick={() => setEditingEducation(!editingEducation)}
-              >
-                {editingEducation ? <FiX /> : <FiEdit2 />}
-              </button>
-            </div>
-
-            {editingEducation ? (
-              <div className="edit-form">
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="institution">Educational Institution</label>
-                    <div className="input-icon-wrapper">
-                      <FiUsers className="input-icon" />
-                      <input
-                        type="text"
-                        id="institution"
-                        name="institution"
-                        value={educationInfo.institution}
-                        onChange={handleEducationChange}
-                        placeholder="University or College Name"
-                      />
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="degree">Degree</label>
-                    <div className="input-icon-wrapper">
-                      <FiBriefcase className="input-icon" />
-                      <input
-                        type="text"
-                        id="degree"
-                        name="degree"
-                        value={educationInfo.degree}
-                        onChange={handleEducationChange}
-                        placeholder="Bachelor's, Master's, etc."
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="fieldOfStudy">Field of Study</label>
-                    <div className="input-icon-wrapper">
-                      <FiGlobe className="input-icon" />
-                      <input
-                        type="text"
-                        id="fieldOfStudy"
-                        name="fieldOfStudy"
-                        value={educationInfo.fieldOfStudy}
-                        onChange={handleEducationChange}
-                        placeholder="Computer Science, Business, etc."
-                      />
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="graduationDate">Graduation Date</label>
-                    <div className="input-icon-wrapper">
-                      <FiCalendar className="input-icon" />
-                      <input
-                        type="date"
-                        id="graduationDate"
-                        name="graduationDate"
-                        value={educationInfo.graduationDate}
-                        onChange={handleEducationChange}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="form-actions">
-                  <button
-                    className="cancel-button"
-                    onClick={() => setEditingEducation(false)}
-                  >
-                    Cancel
-                  </button>
-                  <button className="save-button" onClick={saveEducationInfo}>
-                    <FiSave /> Save Changes
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="info-display">
-                <div className="info-row">
-                  <div className="info-group">
-                    <span className="info-label">Educational Institution</span>
-                    <span className="info-value">
-                      {educationInfo.institution || "Not specified"}
-                    </span>
-                  </div>
-                  <div className="info-group">
-                    <span className="info-label">Degree</span>
-                    <span className="info-value">
-                      {educationInfo.degree || "Not specified"}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="info-row">
-                  <div className="info-group">
-                    <span className="info-label">Field of Study</span>
-                    <span className="info-value">
-                      {educationInfo.fieldOfStudy || "Not specified"}
-                    </span>
-                  </div>
-                  <div className="info-group">
-                    <span className="info-label">Graduation Date</span>
-                    <span className="info-value">
-                      {educationInfo.graduationDate || "Not specified"}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div> */}
-
           {/* Skills Section */}
           <div className="profile-section">
             <div className="section-header">
@@ -883,5 +709,3 @@ const Profile = ({ onNavigate, userName = "User" }) => {
 }
 
 export default Profile
-
-

@@ -3,8 +3,6 @@
 import { useState, useEffect } from "react";
 import "./Jobs.css";
 import {
-  FiBell,
-  FiSettings,
   FiSearch,
   FiMapPin,
   FiBookmark,
@@ -43,6 +41,28 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
 
   // Show/hide advanced filters
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+
+  // Personal info state
+  const [personalInfo, setPersonalInfo] = useState({
+    firstName: "",
+    lastName: "",
+  });
+
+  // Load personal info from localStorage
+  useEffect(() => {
+    const storedPersonalInfo = localStorage.getItem("jobmate_personal_info");
+    if (storedPersonalInfo) {
+      setPersonalInfo(JSON.parse(storedPersonalInfo));
+    }
+  }, []);
+
+  // Get the display name (from personal info if available, otherwise use userName)
+  const getDisplayName = () => {
+    if (personalInfo.firstName) {
+      return `${personalInfo.firstName} ${personalInfo.lastName}`;
+    }
+    return userName;
+  };
 
   // Token for auth
   const getToken = () => localStorage.getItem("jobmate_token");
@@ -519,32 +539,16 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
             >
               Saved Jobs
             </a>
-            <a
-              href="#"
-              className="nav-link"
-              onClick={(e) => {
-                e.preventDefault();
-                onNavigate("applications");
-              }}
-            >
-              Applications
-            </a>
           </nav>
         </div>
         <div className="user-section">
-          <button className="notification-button">
-            <FiBell />
-          </button>
-          <button
-            className="settings-button"
-            onClick={toggleDebugMode} // Double-click to toggle debug mode
-            onDoubleClick={toggleDebugMode}
+          <div 
+            className="user-avatar"
+            onClick={() => onNavigate("profile")}
+            style={{ cursor: 'pointer' }}
           >
-            <FiSettings />
-          </button>
-          <div className="user-avatar">
             <div className="initials">
-              {userName
+              {getDisplayName()
                 .split(" ")
                 .map((n) => n[0])
                 .join("")}
@@ -846,7 +850,7 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
                     <FiClock />
                     <span>
                       Posted:{" "}
-                      {selectedJob.agoTime || formatTime1Ago(selectedJob.date)}
+                      {selectedJob.agoTime || formatTimeAgo(selectedJob.date)}
                     </span>
                   </div>
                 )}
@@ -927,5 +931,3 @@ const Jobs = ({ onNavigate, userName = "User" }) => {
 };
 
 export default Jobs;
-
-

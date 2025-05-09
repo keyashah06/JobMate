@@ -1,15 +1,13 @@
 "use client"
 
-import { useState } from "react";
-import LoginPage from "./components/auth/LoginPage";
-import Dashboard from "./components/dashboard/Dashboard";
-import Jobs from "./components/jobs/Jobs";
-import SavedJobs from "./components/jobs/SavedJobs";
-import Applications from "./components/applications/Applications";
-import UploadResume from "./components/resume/UploadResume";
-import Profile from "./components/profile/Profile";
-import "./App.css";
-
+import { useState } from "react"
+import LoginPage from "./components/auth/LoginPage"
+import Dashboard from "./components/dashboard/Dashboard"
+import Jobs from "./components/jobs/Jobs"
+import SavedJobs from "./components/jobs/SavedJobs"
+import UploadResume from "./components/resume/UploadResume"
+import Profile from "./components/profile/Profile"
+import "./App.css"
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -44,8 +42,6 @@ function App() {
         return <Jobs onNavigate={handleNavigate} userName={userInfo.name} />
       case "saved-jobs":
         return <SavedJobs onNavigate={handleNavigate} userName={userInfo.name} />
-      case "applications":
-        return <Applications onNavigate={handleNavigate} />
       case "upload-resume":
         return <UploadResume onNavigate={handleNavigate} userName={userInfo.name} />
       case "profile":
@@ -59,5 +55,3 @@ function App() {
 }
 
 export default App
-
-

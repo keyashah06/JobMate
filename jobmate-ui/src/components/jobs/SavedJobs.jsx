@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 import {
-  FiBell,
-  FiSettings,
   FiTrash2,
   FiExternalLink,
   FiBriefcase,
@@ -14,6 +12,28 @@ const SavedJobs = ({ onNavigate, userName = "User" }) => {
   const [savedJobs, setSavedJobs] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedJob, setSelectedJob] = useState(null);
+  
+  // Personal info state
+  const [personalInfo, setPersonalInfo] = useState({
+    firstName: "",
+    lastName: "",
+  });
+
+  // Load personal info from localStorage
+  useEffect(() => {
+    const storedPersonalInfo = localStorage.getItem("jobmate_personal_info");
+    if (storedPersonalInfo) {
+      setPersonalInfo(JSON.parse(storedPersonalInfo));
+    }
+  }, []);
+
+  // Get the display name (from personal info if available, otherwise use userName)
+  const getDisplayName = () => {
+    if (personalInfo.firstName) {
+      return `${personalInfo.firstName} ${personalInfo.lastName}`;
+    }
+    return userName;
+  };
 
   // Load saved jobs from localStorage on component mount
   useEffect(() => {
@@ -96,28 +116,16 @@ const SavedJobs = ({ onNavigate, userName = "User" }) => {
             >
               Saved Jobs
             </a>
-            <a
-              href="#"
-              className="nav-link"
-              onClick={(e) => {
-                e.preventDefault();
-                onNavigate("applications");
-              }}
-            >
-              Applications
-            </a>
           </nav>
         </div>
         <div className="user-section">
-          <button className="notification-button">
-            <FiBell />
-          </button>
-          <button className="settings-button">
-            <FiSettings />
-          </button>
-          <div className="user-avatar">
+          <div 
+            className="user-avatar"
+            onClick={() => onNavigate("profile")}
+            style={{ cursor: 'pointer' }}
+          >
             <div className="initials">
-              {userName
+              {getDisplayName()
                 .split(" ")
                 .map((n) => n[0])
                 .join("")}
@@ -179,7 +187,7 @@ const SavedJobs = ({ onNavigate, userName = "User" }) => {
                     <div className="job-company-logo">
                       {job.companyLogo ? (
                         <img
-                          src={job.companyLogo}
+                          src={job.companyLogo || "/placeholder.svg"}
                           alt={`${job.company} logo`}
                         />
                       ) : (
@@ -232,5 +240,3 @@ const SavedJobs = ({ onNavigate, userName = "User" }) => {
 };
 
 export default SavedJobs;
-
-
