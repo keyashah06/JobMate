@@ -2,3 +2,22 @@ jobmate-app/package-lock.json
 jobmate-app/package.json
 jobmate-app/package.json
 /node_modules
+# Node / React
+jobmate-ui/node_modules/
+node_modules/
+jobmate-ui/.next/
+jobmate-ui/build/
+jobmate-ui/dist/
+
+# Python / Django
+venv/
+.env
+__pycache__/
+*.py[cod]
+*.sqlite3
+
+# General
+.DS_Store
+.vscode/
+.idea/
+*.log
