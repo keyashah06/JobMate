@@ -14,4 +14,4 @@ JobMate is a **job search assistant and application web extension** that streaml
 - Enhanced efficiency by reducing repetitive application steps.  
 
 ### 👥 Team Project
-Developed as part of Hofstra University’s **Senior Design Capstone** in collaboration with a team of 4 students.
+Developed as part of Hofstra University’s **Senior Design Capstone** in collaboration with a team of 4 students including myself.
